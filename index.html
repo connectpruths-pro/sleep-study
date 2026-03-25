@@ -2,27 +2,71 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sleep Health Analysis</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        h2 { color: #2c3e50; text-align: center; }
-        .question { margin-bottom: 15px; display: block; cursor: pointer; font-size: 16px; }
-        button { width: 100%; padding: 12px; background-color: #3498db; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; transition: background 0.3s; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f4f7f6; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+        .container { 
+            background: white; 
+            padding: 2rem; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            width: 100%; 
+            max-width: 400px; 
+        }
+        h2 { color: #2c3e50; text-align: center; margin-bottom: 20px; }
+        .question { 
+            margin-bottom: 15px; 
+            display: block; 
+            cursor: pointer; 
+            font-size: 16px; 
+            padding: 5px;
+        }
+        input[type="checkbox"] { margin-right: 10px; transform: scale(1.2); }
+        button { 
+            width: 100%; 
+            padding: 12px; 
+            background-color: #3498db; 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            font-size: 16px; 
+            cursor: pointer; 
+            transition: background 0.3s; 
+            margin-top: 10px;
+        }
         button:hover { background-color: #2980b9; }
-        #result { margin-top: 20px; padding: 15px; border-radius: 4px; display: none; text-align: center; font-weight: bold; }
+        #result { 
+            margin-top: 20px; 
+            padding: 15px; 
+            border-radius: 4px; 
+            display: none; 
+            text-align: center; 
+            font-weight: bold; 
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h2>Sleep Questionnaire</h2>
+    
     <label class="question"><input type="checkbox" id="snoring"> Do you snore loudly?</label>
     <label class="question"><input type="checkbox" id="tired"> Do you feel tired during the day?</label>
     <label class="question"><input type="checkbox" id="observed"> Has anyone seen you stop breathing?</label>
     <label class="question"><input type="checkbox" id="pressure"> Do you have high blood pressure?</label>
     
     <button onclick="sendData()">Submit Analysis</button>
+    
     <div id="result"></div>
 </div>
 
@@ -30,7 +74,7 @@
 async function sendData() {
     const resultDiv = document.getElementById('result');
     
-    // 1. Gather the data from checkboxes FIRST
+    // 1. Gather data from checkboxes
     const payload = {
         snoring: document.getElementById('snoring').checked,
         tired: document.getElementById('tired').checked,
@@ -38,36 +82,45 @@ async function sendData() {
         pressure: document.getElementById('pressure').checked
     };
 
-    // 2. Show the processing message
+    // 2. Show processing state
     resultDiv.style.display = "block";
-    resultDiv.style.backgroundColor = "#e1f5fe";
-    resultDiv.innerHTML = "Processing...";
+    resultDiv.style.backgroundColor = "#e3f2fd";
+    resultDiv.innerHTML = "Processing Analysis...";
 
     try {
-        // 3. Your unique AWS Invoke URL (Ensure NO extra spaces or slashes)
+        // 3. Your AWS API URL
         const API_URL = "https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod"; 
 
         const response = await fetch(API_URL, {
             method: "POST",
-            mode: "cors", 
-            headers: { 
-                "Content-Type": "application/json" 
-            },
+            mode: "cors",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
         });
 
-        if (!response.ok) throw new Error("Server Error");
+        if (!response.ok) {
+            throw new Error("Server responded with error");
+        }
 
         const data = await response.json();
         
-        // 4. Display the results
-        resultDiv.innerHTML = "<strong>Risk Level: " + data.severity + "</strong><br>Score: " + data.score + "/4";
-        resultDiv.style.backgroundColor = data.score >= 3 ? "#ffcdd2" : "#c8e6c9";
+        // 4. Show the result from AWS
+        resultDiv.innerHTML = "Risk Level: " + (data.severity || "Calculated") + "<br>Score: " + (data.score !== undefined ? data.score : "N/A") + "/4";
+        
+        // Color coding based on risk
+        if (data.score >= 3) {
+            resultDiv.style.backgroundColor = "#ffcdd2"; // Red for high risk
+            resultDiv.style.color = "#b71c1c";
+        } else {
+            resultDiv.style.backgroundColor = "#c8e6c9"; // Green for low risk
+            resultDiv.style.color = "#1b5e20";
+        }
 
     } catch (error) {
-        console.error("Error:", error);
-        resultDiv.innerHTML = "Connection Error. Please check your API URL or CORS settings.";
-        resultDiv.style.backgroundColor = "#ffccbc";
+        console.error("Fetch error:", error);
+        resultDiv.innerHTML = "Connection Error.<br><small>Please check your AWS CORS settings.</small>";
+        resultDiv.style.backgroundColor = "#ffebee";
+        resultDiv.style.color = "#c62828";
     }
 }
 </script>
