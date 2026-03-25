@@ -27,19 +27,10 @@
 </div>
 
 <script>
-async function sendData() {try {
-        const API_URL = "https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod"; 
-
-        const response = await fetch(API_URL, {
-            method: "POST",
-            mode: "cors", // Add this line
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload) // This MUST be here
-        });
+async function sendData() {
     const resultDiv = document.getElementById('result');
     
+    // 1. Gather the data from checkboxes FIRST
     const payload = {
         snoring: document.getElementById('snoring').checked,
         tired: document.getElementById('tired').checked,
@@ -47,29 +38,35 @@ async function sendData() {try {
         pressure: document.getElementById('pressure').checked
     };
 
+    // 2. Show the processing message
     resultDiv.style.display = "block";
     resultDiv.style.backgroundColor = "#e1f5fe";
     resultDiv.innerHTML = "Processing...";
 
     try {
-        // This is your unique AWS Invoke URL
-        const API_URL = "https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod
-
-"; 
+        // 3. Your unique AWS Invoke URL (Ensure NO extra spaces or slashes)
+        const API_URL = "https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod"; 
 
         const response = await fetch(API_URL, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            mode: "cors", 
+            headers: { 
+                "Content-Type": "application/json" 
+            },
             body: JSON.stringify(payload)
         });
 
+        if (!response.ok) throw new Error("Server Error");
+
         const data = await response.json();
         
-        resultDiv.innerHTML = "Risk Level: " + data.severity + "<br>Score: " + data.score + "/4";
+        // 4. Display the results
+        resultDiv.innerHTML = "<strong>Risk Level: " + data.severity + "</strong><br>Score: " + data.score + "/4";
         resultDiv.style.backgroundColor = data.score >= 3 ? "#ffcdd2" : "#c8e6c9";
 
     } catch (error) {
-        resultDiv.innerHTML = "Connection Error. Please check your API URL.";
+        console.error("Error:", error);
+        resultDiv.innerHTML = "Connection Error. Please check your API URL or CORS settings.";
         resultDiv.style.backgroundColor = "#ffccbc";
     }
 }
