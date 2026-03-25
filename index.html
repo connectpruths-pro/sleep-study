@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sleep Health Analysis</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { color: #2c3e50; text-align: center; }
+        .question { margin-bottom: 15px; display: block; cursor: pointer; font-size: 16px; }
+        button { width: 100%; padding: 12px; background-color: #3498db; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; transition: background 0.3s; }
+        button:hover { background-color: #2980b9; }
+        #result { margin-top: 20px; padding: 15px; border-radius: 4px; display: none; text-align: center; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Sleep Questionnaire</h2>
+    <label class="question"><input type="checkbox" id="snoring"> Do you snore loudly?</label>
+    <label class="question"><input type="checkbox" id="tired"> Do you feel tired during the day?</label>
+    <label class="question"><input type="checkbox" id="observed"> Has anyone seen you stop breathing?</label>
+    <label class="question"><input type="checkbox" id="pressure"> Do you have high blood pressure?</label>
+    
+    <button onclick="sendData()">Submit Analysis</button>
+    <div id="result"></div>
+</div>
+
+<script>
+async function sendData() {try {
+        const API_URL = "https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod"; 
+
+        const response = await fetch(API_URL, {
+            method: "POST",
+            mode: "cors", // Add this line
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload) // This MUST be here
+        });
+    const resultDiv = document.getElementById('result');
+    
+    const payload = {
+        snoring: document.getElementById('snoring').checked,
+        tired: document.getElementById('tired').checked,
+        observed: document.getElementById('observed').checked,
+        pressure: document.getElementById('pressure').checked
+    };
+
+    resultDiv.style.display = "block";
+    resultDiv.style.backgroundColor = "#e1f5fe";
+    resultDiv.innerHTML = "Processing...";
+
+    try {
+        // This is your unique AWS Invoke URL
+        const API_URL = "https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod
+
+"; 
+
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        
+        resultDiv.innerHTML = "Risk Level: " + data.severity + "<br>Score: " + data.score + "/4";
+        resultDiv.style.backgroundColor = data.score >= 3 ? "#ffcdd2" : "#c8e6c9";
+
+    } catch (error) {
+        resultDiv.innerHTML = "Connection Error. Please check your API URL.";
+        resultDiv.style.backgroundColor = "#ffccbc";
+    }
+}
+</script>
+
+</body>
+</html>
