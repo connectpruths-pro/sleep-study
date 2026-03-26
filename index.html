@@ -3,29 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sleep Health Analysis</title>
+    <title>Sleep Analysis</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .card { 
-    background: white; 
-    padding: 2rem; 
-    border-radius: 12px; 
-    width: 100%; 
-    max-width: 400px; /* This prevents the horizontal line */
-    text-align: center; 
-}
-.question { 
-    display: flex; /* This puts the checkbox next to the text */
-    align-items: center; 
-    margin-bottom: 12px; /* This creates the vertical space between questions */
-}
-        .question:hover { border-color: #1a73e8; background: #f8fbff; }
-        input[type="checkbox"] { width: 20px; height: 20px; margin-right: 15px; cursor: pointer; }
-        label { cursor: pointer; font-size: 16px; color: #3c4043; flex-grow: 1; text-align: left; }
-        button { background-color: #1a73e8; color: white; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+        body { font-family: Arial, sans-serif; background-color: #f4f7f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 450px; }
+        h2 { text-align: center; color: #1a73e8; margin-bottom: 25px; }
+        .question-group { margin-bottom: 20px; }
+        .question { display: flex; align-items: center; background: #fff; border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin-bottom: 10px; cursor: pointer; }
+        input[type="checkbox"] { width: 18px; height: 18px; margin-right: 12px; }
+        label { cursor: pointer; color: #333; font-size: 15px; flex: 1; }
+        button { background-color: #1a73e8; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
         button:hover { background-color: #1557b0; }
-        button:disabled { background-color: #ccc; }
-        #result { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; font-weight: bold; line-height: 1.5; }
+        #result { margin-top: 20px; padding: 15px; border-radius: 8px; text-align: center; font-weight: bold; display: none; }
     </style>
 </head>
 <body>
@@ -33,35 +22,39 @@
 <div class="card">
     <h2>Sleep Analysis</h2>
     
-    <div class="question">
-        <input type="checkbox" id="snoring">
-        <label for="snoring">Do you snore loudly?</label>
+    <div class="question-group">
+        <div class="question">
+            <input type="checkbox" id="snoring">
+            <label for="snoring">Do you snore loudly?</label>
+        </div>
+        <div class="question">
+            <input type="checkbox" id="tired">
+            <label for="tired">Do you feel tired?</label>
+        </div>
+        <div class="question">
+            <input type="checkbox" id="observed">
+            <label for="observed">Stop breathing at night?</label>
+        </div>
+        <div class="question">
+            <input type="checkbox" id="pressure">
+            <label for="pressure">High blood pressure?</label>
+        </div>
     </div>
-    <div class="question">
-        <input type="checkbox" id="tired">
-        <label for="tired">Do you feel tired?</label>
-    </div>
-    <div class="question">
-        <input type="checkbox" id="observed">
-        <label for="observed">Stop breathing at night?</label>
-    </div>
-   <div class="question">
-    <input type="checkbox" id="snoring">
-    <label for="snoring">Do you snore loudly?</label>
+
+    <button id="submitBtn" onclick="sendData()">Submit Analysis</button>
+
+    <div id="result"></div>
 </div>
-<div class="question">
-    <input type="checkbox" id="tired">
-    <label for="tired">Do you feel tired?</label>
-</div>
+
 <script>
 async function sendData() {
     const res = document.getElementById('result');
     const btn = document.getElementById('submitBtn');
     
     btn.disabled = true;
-    btn.innerText = "Processing...";
+    btn.innerText = "Analyzing...";
     res.style.display = "block";
-    res.innerHTML = "Analyzing...";
+    res.innerHTML = "Processing...";
 
     const payload = {
         "snoring": document.getElementById('snoring').checked,
@@ -71,7 +64,6 @@ async function sendData() {
     };
 
     try {
-        // Updated URL with /submit
         const API_URL = "https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod/submit"; 
 
         const response = await fetch(API_URL, {
@@ -84,14 +76,14 @@ async function sendData() {
         let data = rawData.body ? (typeof rawData.body === 'string' ? JSON.parse(rawData.body) : rawData.body) : rawData;
 
         const score = data.score !== undefined ? data.score : 0;
-        const severity = data.severity || "Analysis Complete";
+        const severity = data.severity || "Calculation Done";
 
         res.innerHTML = "Risk Level: " + severity + "<br>Score: " + score + "/4";
         res.style.backgroundColor = score >= 3 ? "#fce8e6" : "#e6f4ea";
         res.style.color = score >= 3 ? "#d93025" : "#137333";
         
     } catch (err) {
-        res.innerHTML = "Error: Check your AWS CORS and URL.";
+        res.innerHTML = "Error: Check AWS Connection";
         res.style.backgroundColor = "#fce8e6";
     } finally {
         btn.disabled = false;
