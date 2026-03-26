@@ -51,17 +51,19 @@ async function sendData() {
     btn.disabled = true;
     btn.innerText = "Processing...";
     res.style.display = "block";
-    res.innerHTML = "Calculating...";
+    res.innerHTML = "Analyzing...";
 
-  const payload = {
-    "snoring": document.getElementById('snoring').checked,
-    "tired": document.getElementById('tired').checked,
-    "observed": document.getElementById('observed').checked,
-    "pressure": document.getElementById('pressure').checked
-};
+    // This collects the checkbox data
+    const payload = {
+        "snoring": document.getElementById('snoring').checked,
+        "tired": document.getElementById('tired').checked,
+        "observed": document.getElementById('observed').checked,
+        "pressure": document.getElementById('pressure').checked
+    };
 
     try {
-        const API_URL = " https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod/submit"; 
+        // !!! DOUBLE CHECK THIS URL MATCHES YOUR AWS TRIGGER !!!
+        const API_URL = "https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod"; 
 
         const response = await fetch(API_URL, {
             method: "POST",
@@ -69,19 +71,20 @@ async function sendData() {
             body: JSON.stringify(payload)
         });
 
-        const data = await response.json();
+        const rawData = await response.json();
         
-        // If AWS wrapped the data in a "body" tag, we unwrap it here
-        const finalData = data.body ? (typeof data.body === 'string' ? JSON.parse(data.body) : data.body) : data;
+        // This 'unwraps' the data from AWS
+        let data = rawData.body ? (typeof rawData.body === 'string' ? JSON.parse(rawData.body) : rawData.body) : rawData;
 
-        const score = finalData.score !== undefined ? finalData.score : 0;
-        const severity = finalData.severity || "Low Risk";
+        const score = (data.score !== undefined) ? data.score : 0;
+        const severity = data.severity || "Calculation Complete";
 
         res.innerHTML = "Risk Level: " + severity + "<br>Score: " + score + "/4";
         res.style.backgroundColor = score >= 3 ? "#fce8e6" : "#e6f4ea";
+        res.style.color = score >= 3 ? "#d93025" : "#137333";
         
     } catch (err) {
-        res.innerHTML = "Error: Connection successful, but data is hidden.";
+        res.innerHTML = "Error: Check your AWS Trigger URL.";
         res.style.backgroundColor = "#fce8e6";
     } finally {
         btn.disabled = false;
@@ -89,6 +92,4 @@ async function sendData() {
     }
 }
 </script>
-
-</body>
 </html>
