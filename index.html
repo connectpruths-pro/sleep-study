@@ -60,11 +60,11 @@ async function sendData() {
 
     res.style.display = "block";
     res.style.backgroundColor = "#e8f0fe";
-    res.innerHTML = "Calculating Risk...";
+    res.innerHTML = "Calculating...";
 
     try {
-        // Use your NEW Trigger URL here!
-        const API_URL = " https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod/submit"; 
+        // !!! IMPORTANT: Keep your NEW Trigger URL here !!!
+        const API_URL = "https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod"; 
 
         const response = await fetch(API_URL, {
             method: "POST",
@@ -73,23 +73,23 @@ async function sendData() {
             body: JSON.stringify(payload)
         });
 
-        let data = await response.json();
-        
-        // --- SAFETY CHECK ---
-        // If AWS sends back a string instead of an object, we fix it here:
-        if (typeof data.body === 'string') {
-            data = JSON.parse(data.body);
-        }
+        const rawData = await response.json();
+        console.log("Raw AWS Data:", rawData);
 
-        // Show the results
-        const score = data.score !== undefined ? data.score : "Error";
-        const severity = data.severity || "Unknown";
+        // --- THE FIX ---
+        // AWS HTTP APIs often put the result directly in the object, 
+        // but sometimes they wrap it. This line handles both.
+        let data = rawData.body ? (typeof rawData.body === 'string' ? JSON.parse(rawData.body) : rawData.body) : rawData;
+
+        // Final values
+        const score = (data.score !== undefined) ? data.score : "0";
+        const severity = data.severity || "Calculated";
 
         res.innerHTML = "Risk Level: " + severity + "<br>Score: " + score + "/4";
         res.style.backgroundColor = score >= 3 ? "#fce8e6" : "#e6f4ea";
         
     } catch (err) {
-        console.error(err);
+        console.error("Error detail:", err);
         res.innerHTML = "Error: Data format mismatch.";
         res.style.backgroundColor = "#fce8e6";
     } finally {
