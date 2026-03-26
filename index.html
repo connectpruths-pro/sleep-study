@@ -19,28 +19,21 @@
 </head>
 <body>
 
-<div class="card">
-    <h2>Sleep Analysis</h2>
-    
-    <div class="row" onclick="document.getElementById('snoring').click()">
-        <input type="checkbox" id="snoring">
-        <label>Do you snore loudly?</label>
-    </div>
-    <div class="row" onclick="document.getElementById('tired').click()">
-        <input type="checkbox" id="tired">
-        <label>Do you feel tired?</label>
-    </div>
-    <div class="row" onclick="document.getElementById('observed').click()">
-        <input type="checkbox" id="observed">
-        <label>Stop breathing at night?</label>
-    </div>
-    <div class="row" onclick="document.getElementById('pressure').click()">
-        <input type="checkbox" id="pressure">
-        <label>High blood pressure?</label>
-    </div>
-
-    <button id="submitBtn" onclick="sendData()">Submit Analysis</button>
-    <div id="result"></div>
+<div class="question">
+    <input type="checkbox" id="snoring">
+    <label for="snoring">Do you snore loudly?</label>
+</div>
+<div class="question">
+    <input type="checkbox" id="tired">
+    <label for="tired">Do you feel tired?</label>
+</div>
+<div class="question">
+    <input type="checkbox" id="observed">
+    <label for="observed">Stop breathing at night?</label>
+</div>
+<div class="question">
+    <input type="checkbox" id="pressure">
+    <label for="pressure">High blood pressure?</label>
 </div>
 
 <script>
@@ -54,13 +47,12 @@ async function sendData() {
     res.innerHTML = "Analyzing...";
 
     // This collects the checkbox data
-    const payload = {
-        "snoring": document.getElementById('snoring').checked,
-        "tired": document.getElementById('tired').checked,
-        "observed": document.getElementById('observed').checked,
-        "pressure": document.getElementById('pressure').checked
-    };
-
+   const payload = {
+    "snoring": document.getElementById('snoring').checked,
+    "tired": document.getElementById('tired').checked,
+    "observed": document.getElementById('observed').checked,
+    "pressure": document.getElementById('pressure').checked
+};
     try {
         // !!! DOUBLE CHECK THIS URL MATCHES YOUR AWS TRIGGER !!!
         const API_URL = "https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod/submit";
