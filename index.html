@@ -63,7 +63,7 @@ async function sendData() {
 
     try {
         // !!! DOUBLE CHECK THIS URL MATCHES YOUR AWS TRIGGER !!!
-        const API_URL = "https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod"; 
+        const API_URL = "https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod/submit";
 
         const response = await fetch(API_URL, {
             method: "POST",
