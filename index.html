@@ -56,45 +56,40 @@ async function sendData() {
     res.style.display = "block";
     res.innerHTML = "Processing...";
 
-    // This captures the TRUE/FALSE value of each box
- const payload = {
-    "snoring": document.getElementById('snoring').checked,
-    "tired": document.getElementById('tired').checked,
-    "observed": document.getElementById('observed').checked,
-    "pressure": document.getElementById('pressure').checked
-};
+    // This forces a clean true/false value for every checkbox
+    const payload = {
+        snoring: document.getElementById('snoring').checked === true,
+        tired: document.getElementById('tired').checked === true,
+        observed: document.getElementById('observed').checked === true,
+        pressure: document.getElementById('pressure').checked === true
+    };
+
     try {
-        // Use the /submit URL as we identified earlier
         const API_URL = "https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod/submit"; 
 
         const response = await fetch(API_URL, {
             method: "POST",
-            mode: "cors", // Explicitly handle cross-origin
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
         });
 
         const rawData = await response.json();
         
-        // AWS often wraps the response, this unwraps it safely
+        // AWS 2.0 often wraps the answer; this unwraps it safely
         let data = rawData;
         if (rawData.body) {
             data = typeof rawData.body === 'string' ? JSON.parse(rawData.body) : rawData.body;
         }
 
         const score = data.score !== undefined ? data.score : 0;
-        const severity = data.severity || "Calculation Done";
+        const severity = data.severity || "Low Risk";
 
         res.innerHTML = "Risk Level: " + severity + "<br>Score: " + score + "/4";
-        
-        // UI colors for risk levels
         res.style.backgroundColor = score >= 3 ? "#fce8e6" : "#e6f4ea";
         res.style.color = score >= 3 ? "#d93025" : "#137333";
         
     } catch (err) {
-        console.error("Submission Error:", err);
-        res.innerHTML = "Error: Check AWS Trigger Connection.";
-        res.style.backgroundColor = "#fce8e6";
+        res.innerHTML = "Error: Check AWS Connection";
     } finally {
         btn.disabled = false;
         btn.innerText = "Submit Analysis";
