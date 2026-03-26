@@ -53,12 +53,12 @@ async function sendData() {
     res.style.display = "block";
     res.innerHTML = "Calculating...";
 
-    const payload = {
-        snoring: document.getElementById('snoring').checked,
-        tired: document.getElementById('tired').checked,
-        observed: document.getElementById('observed').checked,
-        pressure: document.getElementById('pressure').checked
-    };
+  const payload = {
+    "snoring": document.getElementById('snoring').checked,
+    "tired": document.getElementById('tired').checked,
+    "observed": document.getElementById('observed').checked,
+    "pressure": document.getElementById('pressure').checked
+};
 
     try {
         const API_URL = " https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod/submit"; 
