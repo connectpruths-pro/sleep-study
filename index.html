@@ -23,22 +23,22 @@
     <h2>Sleep Analysis</h2>
     
     <div class="question-group">
-        <div class="question">
-            <input type="checkbox" id="snoring">
-            <label for="snoring">Do you snore loudly?</label>
-        </div>
-        <div class="question">
-            <input type="checkbox" id="tired">
-            <label for="tired">Do you feel tired?</label>
-        </div>
-        <div class="question">
-            <input type="checkbox" id="observed">
-            <label for="observed">Stop breathing at night?</label>
-        </div>
-        <div class="question">
-            <input type="checkbox" id="pressure">
-            <label for="pressure">High blood pressure?</label>
-        </div>
+       <div class="question">
+    <input type="checkbox" id="snoring">
+    <label for="snoring">Do you snore loudly?</label>
+</div>
+<div class="question">
+    <input type="checkbox" id="tired">
+    <label for="tired">Do you feel tired?</label>
+</div>
+<div class="question">
+    <input type="checkbox" id="observed">
+    <label for="observed">Stop breathing at night?</label>
+</div>
+<div class="question">
+    <input type="checkbox" id="pressure">
+    <label for="pressure">High blood pressure?</label>
+</div>
     </div>
 
     <button id="submitBtn" onclick="sendData()">Submit Analysis</button>
@@ -57,13 +57,12 @@ async function sendData() {
     res.innerHTML = "Processing...";
 
     // This captures the TRUE/FALSE value of each box
-    const payload = {
-        "snoring": document.getElementById('snoring').checked,
-        "tired": document.getElementById('tired').checked,
-        "observed": document.getElementById('observed').checked,
-        "pressure": document.getElementById('pressure').checked
-    };
-
+ const payload = {
+    "snoring": document.getElementById('snoring').checked,
+    "tired": document.getElementById('tired').checked,
+    "observed": document.getElementById('observed').checked,
+    "pressure": document.getElementById('pressure').checked
+};
     try {
         // Use the /submit URL as we identified earlier
         const API_URL = "https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod/submit"; 
