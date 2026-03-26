@@ -50,7 +50,9 @@ async function sendData() {
     
     btn.disabled = true;
     btn.innerText = "Processing...";
-    
+    res.style.display = "block";
+    res.innerHTML = "Calculating...";
+
     const payload = {
         snoring: document.getElementById('snoring').checked,
         tired: document.getElementById('tired').checked,
@@ -58,39 +60,28 @@ async function sendData() {
         pressure: document.getElementById('pressure').checked
     };
 
-    res.style.display = "block";
-    res.style.backgroundColor = "#e8f0fe";
-    res.innerHTML = "Calculating...";
-
     try {
-        // !!! IMPORTANT: Keep your NEW Trigger URL here !!!
         const API_URL = "https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod"; 
 
         const response = await fetch(API_URL, {
             method: "POST",
-            mode: "cors",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
         });
 
-        const rawData = await response.json();
-        console.log("Raw AWS Data:", rawData);
+        const data = await response.json();
+        
+        // If AWS wrapped the data in a "body" tag, we unwrap it here
+        const finalData = data.body ? (typeof data.body === 'string' ? JSON.parse(data.body) : data.body) : data;
 
-        // --- THE FIX ---
-        // AWS HTTP APIs often put the result directly in the object, 
-        // but sometimes they wrap it. This line handles both.
-        let data = rawData.body ? (typeof rawData.body === 'string' ? JSON.parse(rawData.body) : rawData.body) : rawData;
-
-        // Final values
-        const score = (data.score !== undefined) ? data.score : "0";
-        const severity = data.severity || "Calculated";
+        const score = finalData.score !== undefined ? finalData.score : 0;
+        const severity = finalData.severity || "Low Risk";
 
         res.innerHTML = "Risk Level: " + severity + "<br>Score: " + score + "/4";
         res.style.backgroundColor = score >= 3 ? "#fce8e6" : "#e6f4ea";
         
     } catch (err) {
-        console.error("Error detail:", err);
-        res.innerHTML = "Error: Data format mismatch.";
+        res.innerHTML = "Error: Connection successful, but data is hidden.";
         res.style.backgroundColor = "#fce8e6";
     } finally {
         btn.disabled = false;
