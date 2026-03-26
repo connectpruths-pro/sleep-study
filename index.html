@@ -48,7 +48,6 @@ async function sendData() {
     const res = document.getElementById('result');
     const btn = document.getElementById('submitBtn');
     
-    // Disable button to prevent double-clicks
     btn.disabled = true;
     btn.innerText = "Processing...";
     
@@ -61,10 +60,10 @@ async function sendData() {
 
     res.style.display = "block";
     res.style.backgroundColor = "#e8f0fe";
-    res.innerHTML = "Connecting to AWS...";
+    res.innerHTML = "Calculating Risk...";
 
     try {
-        // REPLACE THIS URL with your latest AWS Trigger URL if it has changed
+        // Use your NEW Trigger URL here!
         const API_URL = " https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod/submit"; 
 
         const response = await fetch(API_URL, {
@@ -74,12 +73,24 @@ async function sendData() {
             body: JSON.stringify(payload)
         });
 
-        const data = await response.json();
-        res.innerHTML = "Risk Level: " + data.severity + "<br>Score: " + data.score + "/4";
-        res.style.backgroundColor = data.score >= 3 ? "#fce8e6" : "#e6f4ea";
+        let data = await response.json();
+        
+        // --- SAFETY CHECK ---
+        // If AWS sends back a string instead of an object, we fix it here:
+        if (typeof data.body === 'string') {
+            data = JSON.parse(data.body);
+        }
+
+        // Show the results
+        const score = data.score !== undefined ? data.score : "Error";
+        const severity = data.severity || "Unknown";
+
+        res.innerHTML = "Risk Level: " + severity + "<br>Score: " + score + "/4";
+        res.style.backgroundColor = score >= 3 ? "#fce8e6" : "#e6f4ea";
         
     } catch (err) {
-        res.innerHTML = "Error: Cannot reach AWS. Check CORS settings.";
+        console.error(err);
+        res.innerHTML = "Error: Data format mismatch.";
         res.style.backgroundColor = "#fce8e6";
     } finally {
         btn.disabled = false;
