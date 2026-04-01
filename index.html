@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -18,34 +18,30 @@
     </style>
 </head>
 <body>
-
 <div class="card">
     <h2>Sleep Analysis</h2>
     
     <div class="question-group">
-       <div class="question">
-    <input type="checkbox" id="snoring">
-    <label for="snoring">Do you snore loudly?</label>
-</div>
-<div class="question">
-    <input type="checkbox" id="tired">
-    <label for="tired">Do you feel tired?</label>
-</div>
-<div class="question">
-    <input type="checkbox" id="observed">
-    <label for="observed">Stop breathing at night?</label>
-</div>
-<div class="question">
-    <input type="checkbox" id="pressure">
-    <label for="pressure">High blood pressure?</label>
-</div>
+        <div class="question">
+            <input type="checkbox" id="snoring">
+            <label for="snoring">Do you snore loudly?</label>
+        </div>
+        <div class="question">
+            <input type="checkbox" id="tired">
+            <label for="tired">Do you feel tired?</label>
+        </div>
+        <div class="question">
+            <input type="checkbox" id="observed">
+            <label for="observed">Stop breathing at night?</label>
+        </div>
+        <div class="question">
+            <input type="checkbox" id="pressure">
+            <label for="pressure">High blood pressure?</label>
+        </div>
     </div>
-
     <button id="submitBtn" onclick="sendData()">Submit Analysis</button>
-
     <div id="result"></div>
 </div>
-
 <script>
 async function sendData() {
     const res = document.getElementById('result');
@@ -55,39 +51,29 @@ async function sendData() {
     btn.innerText = "Analyzing...";
     res.style.display = "block";
     res.innerHTML = "Processing...";
-
-    // This forces a clean true/false value for every checkbox
     const payload = {
         snoring: document.getElementById('snoring').checked === true,
         tired: document.getElementById('tired').checked === true,
         observed: document.getElementById('observed').checked === true,
         pressure: document.getElementById('pressure').checked === true
     };
-
     try {
-        const API_URL = "https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod/submit"; 
-
+        const API_URL = "https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod/submit";
         const response = await fetch(API_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
         });
-
         const rawData = await response.json();
-        
-        // AWS 2.0 often wraps the answer; this unwraps it safely
         let data = rawData;
         if (rawData.body) {
             data = typeof rawData.body === 'string' ? JSON.parse(rawData.body) : rawData.body;
         }
-
         const score = data.score !== undefined ? data.score : 0;
-        const severity = data.severity || "Low Risk";
-
+        const severity = data.risk_level || "Low Risk";
         res.innerHTML = "Risk Level: " + severity + "<br>Score: " + score + "/4";
         res.style.backgroundColor = score >= 3 ? "#fce8e6" : "#e6f4ea";
         res.style.color = score >= 3 ? "#d93025" : "#137333";
-        
     } catch (err) {
         res.innerHTML = "Error: Check AWS Connection";
     } finally {
@@ -96,6 +82,5 @@ async function sendData() {
     }
 }
 </script>
-
 </body>
 </html>
