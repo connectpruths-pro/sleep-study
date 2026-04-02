@@ -1,85 +1,568 @@
-<!<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sleep Analysis</title>
+    <title>Sleep Analysis Questionnaire</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f7f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
-        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 450px; }
-        h2 { text-align: center; color: #1a73e8; margin-bottom: 25px; }
-        .question-group { margin-bottom: 20px; }
-        .question { display: flex; align-items: center; background: #fff; border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin-bottom: 10px; cursor: pointer; }
-        input[type="checkbox"] { width: 18px; height: 18px; margin-right: 12px; }
-        label { cursor: pointer; color: #333; font-size: 15px; flex: 1; }
-        button { background-color: #1a73e8; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        button:hover { background-color: #1557b0; }
-        #result { margin-top: 20px; padding: 15px; border-radius: 8px; text-align: center; font-weight: bold; display: none; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; min-height: 100vh; }
+        .header { background: linear-gradient(135deg, #1a73e8, #0d47a1); color: white; text-align: center; padding: 32px 20px; }
+        .header h1 { font-size: 2rem; margin-bottom: 8px; }
+        .header p { opacity: 0.85; font-size: 1rem; }
+        .container { max-width: 820px; margin: 30px auto; padding: 0 20px 60px; }
+        .section { background: white; border-radius: 12px; padding: 28px; margin-bottom: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+        .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-bottom: 14px; border-bottom: 2px solid #e8f0fe; }
+        .section-badge { background: #1a73e8; color: white; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem; flex-shrink: 0; }
+        .section-title { font-size: 1.15rem; font-weight: 600; color: #1a1a2e; }
+        .section-subtitle { font-size: 0.82rem; color: #666; margin-top: 2px; }
+        .question { margin-bottom: 20px; }
+        .question:last-child { margin-bottom: 0; }
+        .q-label { display: block; font-weight: 500; color: #333; margin-bottom: 8px; font-size: 0.95rem; }
+        input[type="text"], input[type="number"] { width: 100%; padding: 10px 14px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 0.95rem; transition: border-color 0.2s; }
+        input[type="text"]:focus, input[type="number"]:focus { outline: none; border-color: #1a73e8; }
+        .radio-group, .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
+        .radio-option, .checkbox-option { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 1.5px solid #e0e0e0; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .radio-option:hover, .checkbox-option:hover { border-color: #1a73e8; background: #f0f6ff; }
+        .radio-option input, .checkbox-option input { width: 16px; height: 16px; accent-color: #1a73e8; }
+        .radio-option span, .checkbox-option span { font-size: 0.9rem; color: #333; }
+        .inline-radio { flex-direction: row; flex-wrap: wrap; }
+        .sub-questions { margin-top: 12px; margin-left: 16px; padding: 16px; background: #f8faff; border-left: 3px solid #1a73e8; border-radius: 0 8px 8px 0; display: none; }
+        .sub-questions.visible { display: block; }
+        .sub-questions .question { margin-bottom: 14px; }
+        .sub-questions .question:last-child { margin-bottom: 0; }
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } .inline-radio { flex-direction: column; } }
+        .submit-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #1a73e8, #0d47a1); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s, transform 0.1s; margin-top: 10px; }
+        .submit-btn:hover { opacity: 0.92; transform: translateY(-1px); }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .results { background: white; border-radius: 12px; padding: 28px; margin-top: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); display: none; }
+        .results h2 { text-align: center; color: #1a1a2e; margin-bottom: 6px; font-size: 1.4rem; }
+        .patient-name { text-align: center; color: #666; margin-bottom: 24px; font-size: 0.95rem; }
+        .primary-finding { background: #e8f0fe; border: 2px solid #1a73e8; border-radius: 10px; padding: 18px 20px; margin-bottom: 20px; text-align: center; }
+        .primary-finding p { color: #1a73e8; font-size: 0.85rem; font-weight: 500; margin-bottom: 4px; }
+        .primary-finding h3 { color: #0d47a1; font-size: 1.2rem; }
+        .risk-card { border-radius: 10px; padding: 16px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .risk-card .disorder-name { font-weight: 600; font-size: 0.95rem; }
+        .risk-card .score-info { font-size: 0.8rem; color: #777; margin-top: 2px; }
+        .risk-badge { padding: 4px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; white-space: nowrap; }
+        .risk-high { background: #ffeaea; } .risk-high .disorder-name { color: #c62828; } .risk-high .risk-badge { background: #c62828; color: white; }
+        .risk-moderate { background: #fff8e1; } .risk-moderate .disorder-name { color: #e65100; } .risk-moderate .risk-badge { background: #e65100; color: white; }
+        .risk-low { background: #e8f5e9; } .risk-low .disorder-name { color: #2e7d32; } .risk-low .risk-badge { background: #2e7d32; color: white; }
+        .recommendations { background: #f8faff; border-radius: 10px; padding: 18px 20px; margin-top: 20px; }
+        .recommendations h4 { color: #1a73e8; margin-bottom: 12px; font-size: 1rem; }
+        .recommendations ul { list-style: none; }
+        .recommendations li { padding: 7px 0 7px 22px; position: relative; font-size: 0.9rem; color: #444; border-bottom: 1px solid #e8f0fe; }
+        .recommendations li:last-child { border-bottom: none; }
+        .recommendations li::before { content: "→"; position: absolute; left: 0; color: #1a73e8; font-weight: bold; }
+        .bmi-info { background: #f0f6ff; border-radius: 8px; padding: 10px 16px; margin-bottom: 16px; font-size: 0.85rem; color: #555; text-align: center; }
+        .disclaimer { text-align: center; font-size: 0.78rem; color: #999; margin-top: 16px; padding-top: 16px; border-top: 1px solid #eee; line-height: 1.5; }
+        .error-msg { background: #ffeaea; color: #c62828; padding: 14px; border-radius: 8px; text-align: center; font-size: 0.9rem; }
     </style>
 </head>
 <body>
-<div class="card">
-    <h2>Sleep Analysis</h2>
-    
-    <div class="question-group">
-        <div class="question">
-            <input type="checkbox" id="snoring">
-            <label for="snoring">Do you snore loudly?</label>
+
+<div class="header">
+    <h1>Sleep Analysis Questionnaire</h1>
+    <p>Complete all sections for a comprehensive sleep health assessment</p>
+</div>
+
+<div class="container">
+<form id="sleepForm">
+
+    <!-- SECTION 1: BASIC INFORMATION -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-badge">1</div>
+            <div>
+                <div class="section-title">Basic Information</div>
+                <div class="section-subtitle">Personal and health background</div>
+            </div>
         </div>
-        <div class="question">
-            <input type="checkbox" id="tired">
-            <label for="tired">Do you feel tired?</label>
+
+        <div class="two-col">
+            <div class="question">
+                <label class="q-label">Full Name</label>
+                <input type="text" id="name" placeholder="Enter your name">
+            </div>
+            <div class="question">
+                <label class="q-label">Age (years)</label>
+                <input type="number" id="age" min="5" max="120" placeholder="e.g. 35">
+            </div>
         </div>
+
         <div class="question">
-            <input type="checkbox" id="observed">
-            <label for="observed">Stop breathing at night?</label>
+            <label class="q-label">Gender</label>
+            <div class="radio-group inline-radio">
+                <label class="radio-option"><input type="radio" name="gender" value="male" onchange="toggleGender()"> <span>Male</span></label>
+                <label class="radio-option"><input type="radio" name="gender" value="female" onchange="toggleGender()"> <span>Female</span></label>
+            </div>
+            <div class="sub-questions" id="female-sub">
+                <div class="question">
+                    <label class="q-label">Menstrual Status</label>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="menstrual" value="regular"> <span>Regular</span></label>
+                        <label class="radio-option"><input type="radio" name="menstrual" value="perimenopause"> <span>Perimenopause</span></label>
+                        <label class="radio-option"><input type="radio" name="menstrual" value="postmenopause"> <span>Post-menopause</span></label>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <div class="two-col">
+            <div class="question">
+                <label class="q-label">Height (cm)</label>
+                <input type="number" id="height" min="100" max="250" placeholder="e.g. 165">
+            </div>
+            <div class="question">
+                <label class="q-label">Weight (kg)</label>
+                <input type="number" id="weight" min="20" max="300" placeholder="e.g. 70">
+            </div>
+        </div>
+
         <div class="question">
-            <input type="checkbox" id="pressure">
-            <label for="pressure">High blood pressure?</label>
+            <label class="q-label">Neck Circumference (cm) — leave blank if unknown</label>
+            <input type="number" id="neck" min="20" max="70" placeholder="e.g. 38">
+        </div>
+
+        <div class="question">
+            <label class="q-label">Known Medical Conditions (tick all that apply)</label>
+            <div class="checkbox-group">
+                <label class="checkbox-option"><input type="checkbox" id="cond_diabetes"> <span>Diabetes</span></label>
+                <label class="checkbox-option"><input type="checkbox" id="cond_hypertension"> <span>Hypertension</span></label>
+                <label class="checkbox-option"><input type="checkbox" id="cond_thyroid"> <span>Thyroid Disorder</span></label>
+                <label class="checkbox-option"><input type="checkbox" id="cond_pcos"> <span>PCOS</span></label>
+                <label class="checkbox-option"><input type="checkbox" id="cond_cardiac"> <span>Cardiac Disease</span></label>
+                <label class="checkbox-option"><input type="checkbox" id="cond_stroke"> <span>Stroke History</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <label class="q-label">Current Consumption (tick all that apply)</label>
+            <div class="checkbox-group">
+                <label class="checkbox-option"><input type="checkbox" id="cons_medications"> <span>Medications</span></label>
+                <label class="checkbox-option"><input type="checkbox" id="cons_caffeine"> <span>Caffeine (tea / coffee / energy drinks)</span></label>
+                <label class="checkbox-option"><input type="checkbox" id="cons_alcohol"> <span>Alcohol</span></label>
+                <label class="checkbox-option"><input type="checkbox" id="cons_smoking"> <span>Smoking / Nicotine</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <label class="q-label">Work Schedule</label>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="work_schedule" value="day"> <span>Day shift</span></label>
+                <label class="radio-option"><input type="radio" name="work_schedule" value="night"> <span>Night shift</span></label>
+                <label class="radio-option"><input type="radio" name="work_schedule" value="rotating"> <span>Rotating</span></label>
+                <label class="radio-option"><input type="radio" name="work_schedule" value="not_working"> <span>Not working</span></label>
+                <label class="radio-option"><input type="radio" name="work_schedule" value="retired"> <span>Retired</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <label class="q-label">Usual Sleep Schedule</label>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="sleep_schedule" value="fixed"> <span>Fixed (consistent sleep and wake times)</span></label>
+                <label class="radio-option"><input type="radio" name="sleep_schedule" value="irregular"> <span>Irregular / varies daily</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <label class="q-label">How satisfied are you with your current sleep?</label>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="sleep_satisfaction" value="5"> <span>Very satisfied</span></label>
+                <label class="radio-option"><input type="radio" name="sleep_satisfaction" value="4"> <span>Satisfied</span></label>
+                <label class="radio-option"><input type="radio" name="sleep_satisfaction" value="3"> <span>Somewhat satisfied</span></label>
+                <label class="radio-option"><input type="radio" name="sleep_satisfaction" value="2"> <span>Dissatisfied</span></label>
+                <label class="radio-option"><input type="radio" name="sleep_satisfaction" value="1"> <span>Very dissatisfied</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <label class="q-label">How satisfied are you with your daytime functioning (work, concentration, mood)?</label>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="daytime_satisfaction" value="5"> <span>Very satisfied</span></label>
+                <label class="radio-option"><input type="radio" name="daytime_satisfaction" value="4"> <span>Satisfied</span></label>
+                <label class="radio-option"><input type="radio" name="daytime_satisfaction" value="3"> <span>Somewhat satisfied</span></label>
+                <label class="radio-option"><input type="radio" name="daytime_satisfaction" value="2"> <span>Dissatisfied</span></label>
+                <label class="radio-option"><input type="radio" name="daytime_satisfaction" value="1"> <span>Very dissatisfied</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <label class="q-label">Do you feel tired, fatigued, or sleepy during the daytime?</label>
+            <div class="radio-group inline-radio">
+                <label class="radio-option"><input type="radio" name="daytime_tired" value="yes" onchange="show('tired-sub')"> <span>Yes</span></label>
+                <label class="radio-option"><input type="radio" name="daytime_tired" value="no" onchange="hide('tired-sub')"> <span>No</span></label>
+            </div>
+            <div class="sub-questions" id="tired-sub">
+                <div class="question">
+                    <label class="q-label">How often?</label>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="tired_freq" value="rarely"> <span>Rarely (≤1 day/week)</span></label>
+                        <label class="radio-option"><input type="radio" name="tired_freq" value="sometimes"> <span>Sometimes (2–3 days/week)</span></label>
+                        <label class="radio-option"><input type="radio" name="tired_freq" value="often"> <span>Often (4–5 days/week)</span></label>
+                        <label class="radio-option"><input type="radio" name="tired_freq" value="daily"> <span>Almost daily</span></label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <button id="submitBtn" onclick="sendData()">Submit Analysis</button>
-    <div id="result"></div>
+
+    <!-- SECTION 2: INSOMNIA -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-badge">2</div>
+            <div>
+                <div class="section-title">Insomnia Symptoms</div>
+                <div class="section-subtitle">Difficulty sleeping or staying asleep</div>
+            </div>
+        </div>
+
+        <div class="question">
+            <label class="q-label">Do you have difficulty falling asleep?</label>
+            <div class="radio-group inline-radio">
+                <label class="radio-option"><input type="radio" name="insomnia_fall" value="yes" onchange="show('insomnia-sub')"> <span>Yes</span></label>
+                <label class="radio-option"><input type="radio" name="insomnia_fall" value="no" onchange="hide('insomnia-sub')"> <span>No</span></label>
+            </div>
+            <div class="sub-questions" id="insomnia-sub">
+                <div class="question">
+                    <label class="q-label">How long does it take to fall asleep?</label>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="sleep_onset" value="under30"> <span>Less than 30 minutes</span></label>
+                        <label class="radio-option"><input type="radio" name="sleep_onset" value="30to60"> <span>30–60 minutes</span></label>
+                        <label class="radio-option"><input type="radio" name="sleep_onset" value="over60"> <span>More than an hour</span></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <label class="q-label">Do you wake up during the night or earlier than planned?</label>
+            <div class="radio-group inline-radio">
+                <label class="radio-option"><input type="radio" name="insomnia_wake" value="yes"> <span>Yes</span></label>
+                <label class="radio-option"><input type="radio" name="insomnia_wake" value="no"> <span>No</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <label class="q-label">If you wake up at night, do you have difficulty falling back asleep?</label>
+            <div class="radio-group inline-radio">
+                <label class="radio-option"><input type="radio" name="insomnia_return" value="yes"> <span>Yes</span></label>
+                <label class="radio-option"><input type="radio" name="insomnia_return" value="no"> <span>No</span></label>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 3: HYPERSOMNIA -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-badge">3</div>
+            <div>
+                <div class="section-title">Excessive Daytime Sleepiness</div>
+                <div class="section-subtitle">Hypersomnia indicators</div>
+            </div>
+        </div>
+
+        <div class="question">
+            <label class="q-label">Do you feel excessively sleepy during the day despite adequate sleep time?</label>
+            <div class="radio-group inline-radio">
+                <label class="radio-option"><input type="radio" name="hypersomnia" value="yes" onchange="show('hyper-sub')"> <span>Yes</span></label>
+                <label class="radio-option"><input type="radio" name="hypersomnia" value="no" onchange="hide('hyper-sub')"> <span>No</span></label>
+            </div>
+        </div>
+
+        <div class="sub-questions" id="hyper-sub">
+            <div class="question">
+                <label class="q-label">Do you have difficulty waking up?</label>
+                <div class="radio-group inline-radio">
+                    <label class="radio-option"><input type="radio" name="diff_waking" value="yes"> <span>Yes</span></label>
+                    <label class="radio-option"><input type="radio" name="diff_waking" value="no"> <span>No</span></label>
+                </div>
+            </div>
+            <div class="question">
+                <label class="q-label">How often do you nap during the day?</label>
+                <div class="radio-group">
+                    <label class="radio-option"><input type="radio" name="nap_freq" value="none"> <span>I don't nap</span></label>
+                    <label class="radio-option"><input type="radio" name="nap_freq" value="1to2"> <span>1–2 times</span></label>
+                    <label class="radio-option"><input type="radio" name="nap_freq" value="3plus"> <span>3 or more times</span></label>
+                </div>
+            </div>
+            <div class="question">
+                <label class="q-label">Longest nap duration:</label>
+                <div class="radio-group">
+                    <label class="radio-option"><input type="radio" name="nap_duration" value="under30"> <span>Less than 30 minutes</span></label>
+                    <label class="radio-option"><input type="radio" name="nap_duration" value="30to60"> <span>30–60 minutes</span></label>
+                    <label class="radio-option"><input type="radio" name="nap_duration" value="over60"> <span>More than 1 hour</span></label>
+                </div>
+            </div>
+            <div class="question">
+                <label class="q-label">Do you feel refreshed after naps?</label>
+                <div class="radio-group inline-radio">
+                    <label class="radio-option"><input type="radio" name="nap_refresh" value="yes"> <span>Yes</span></label>
+                    <label class="radio-option"><input type="radio" name="nap_refresh" value="no"> <span>No</span></label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 4: SLEEP APNEA -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-badge">4</div>
+            <div>
+                <div class="section-title">Sleep Apnea Indicators</div>
+                <div class="section-subtitle">Breathing-related sleep disturbances</div>
+            </div>
+        </div>
+
+        <div class="question">
+            <label class="q-label">Do you have a snoring problem, or has someone told you that you snore?</label>
+            <div class="radio-group inline-radio">
+                <label class="radio-option"><input type="radio" name="snoring" value="yes" onchange="show('apnea-sub')"> <span>Yes</span></label>
+                <label class="radio-option"><input type="radio" name="snoring" value="no" onchange="hide('apnea-sub')"> <span>No</span></label>
+            </div>
+        </div>
+
+        <div class="sub-questions" id="apnea-sub">
+            <div class="question">
+                <label class="q-label">Has anyone observed you stop breathing, choke, or gasp during sleep?</label>
+                <div class="radio-group inline-radio">
+                    <label class="radio-option"><input type="radio" name="observed" value="yes"> <span>Yes</span></label>
+                    <label class="radio-option"><input type="radio" name="observed" value="no"> <span>No</span></label>
+                </div>
+            </div>
+            <div class="question">
+                <label class="q-label">Has your snoring ever been loud enough to be heard outside the room?</label>
+                <div class="radio-group inline-radio">
+                    <label class="radio-option"><input type="radio" name="loud_snoring" value="yes"> <span>Yes</span></label>
+                    <label class="radio-option"><input type="radio" name="loud_snoring" value="no"> <span>No</span></label>
+                </div>
+            </div>
+            <div class="question">
+                <label class="q-label">Do you wake up multiple times at night (more than 3 times)?</label>
+                <div class="radio-group inline-radio">
+                    <label class="radio-option"><input type="radio" name="wake_multiple" value="yes"> <span>Yes</span></label>
+                    <label class="radio-option"><input type="radio" name="wake_multiple" value="no"> <span>No</span></label>
+                </div>
+            </div>
+            <div class="question">
+                <label class="q-label">Do you wake up with a headache?</label>
+                <div class="radio-group inline-radio">
+                    <label class="radio-option"><input type="radio" name="morning_headache" value="yes"> <span>Yes</span></label>
+                    <label class="radio-option"><input type="radio" name="morning_headache" value="no"> <span>No</span></label>
+                </div>
+            </div>
+            <div class="question">
+                <label class="q-label">Do you wake up with a dry mouth?</label>
+                <div class="radio-group inline-radio">
+                    <label class="radio-option"><input type="radio" name="dry_mouth" value="yes"> <span>Yes</span></label>
+                    <label class="radio-option"><input type="radio" name="dry_mouth" value="no"> <span>No</span></label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 5: CIRCADIAN -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-badge">5</div>
+            <div>
+                <div class="section-title">Circadian Rhythm</div>
+                <div class="section-subtitle">Sleep timing and biological clock patterns</div>
+            </div>
+        </div>
+
+        <div class="question">
+            <label class="q-label">Do you struggle to fall asleep at conventional bedtime (10–11 PM)?</label>
+            <div class="radio-group inline-radio">
+                <label class="radio-option"><input type="radio" name="circadian_sleep" value="yes" onchange="show('circadian-sub')"> <span>Yes</span></label>
+                <label class="radio-option"><input type="radio" name="circadian_sleep" value="no" onchange="hide('circadian-sub')"> <span>No</span></label>
+            </div>
+        </div>
+
+        <div class="sub-questions" id="circadian-sub">
+            <div class="question">
+                <label class="q-label">You consider yourself:</label>
+                <div class="radio-group">
+                    <label class="radio-option"><input type="radio" name="sleep_type" value="early"> <span>Early riser</span></label>
+                    <label class="radio-option"><input type="radio" name="sleep_type" value="late"> <span>A person who sleeps late</span></label>
+                    <label class="radio-option"><input type="radio" name="sleep_type" value="irregular"> <span>Irregular sleeper</span></label>
+                </div>
+            </div>
+            <div class="question">
+                <label class="q-label">Do you feel zoned out, lost, or experience brain fog after waking up?</label>
+                <div class="radio-group inline-radio">
+                    <label class="radio-option"><input type="radio" name="brain_fog" value="yes"> <span>Yes</span></label>
+                    <label class="radio-option"><input type="radio" name="brain_fog" value="no"> <span>No</span></label>
+                </div>
+            </div>
+            <div class="question">
+                <label class="q-label">During holidays/weekends, does your sleep timing shift compared to workdays?</label>
+                <div class="radio-group inline-radio">
+                    <label class="radio-option"><input type="radio" name="weekend_shift" value="yes"> <span>Yes</span></label>
+                    <label class="radio-option"><input type="radio" name="weekend_shift" value="no"> <span>No</span></label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 6: DURATION -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-badge">6</div>
+            <div>
+                <div class="section-title">Duration of Symptoms</div>
+                <div class="section-subtitle">How long you have been experiencing these issues</div>
+            </div>
+        </div>
+
+        <div class="question">
+            <label class="q-label">How long have you been experiencing these signs?</label>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="duration" value="under2weeks"> <span>Less than 2 weeks</span></label>
+                <label class="radio-option"><input type="radio" name="duration" value="2w_3m"> <span>2 weeks to 3 months</span></label>
+                <label class="radio-option"><input type="radio" name="duration" value="3m_1y"> <span>3 months to 1 year</span></label>
+                <label class="radio-option"><input type="radio" name="duration" value="over1year"> <span>More than 1 year</span></label>
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="submit-btn" id="submitBtn">Analyse My Sleep</button>
+</form>
+
+<div class="results" id="results">
+    <h2>Sleep Analysis Report</h2>
+    <div class="patient-name" id="patientName"></div>
+    <div id="bmiInfo"></div>
+    <div id="primaryFinding"></div>
+    <div id="categoryScores"></div>
+    <div class="recommendations" id="recommendations"></div>
+    <p class="disclaimer">This assessment is for informational purposes only and does not constitute medical advice. Please consult a qualified healthcare professional for diagnosis and treatment.</p>
 </div>
+</div>
+
 <script>
-async function sendData() {
-    const res = document.getElementById('result');
+const API_URL = "https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod/submit";
+
+function show(id) { document.getElementById(id).classList.add('visible'); }
+function hide(id) { document.getElementById(id).classList.remove('visible'); }
+function toggleGender() {
+    const val = document.querySelector('input[name="gender"]:checked')?.value;
+    val === 'female' ? show('female-sub') : hide('female-sub');
+}
+function getRadio(name) { return document.querySelector(`input[name="${name}"]:checked`)?.value || null; }
+function getCheckbox(id) { return document.getElementById(id)?.checked || false; }
+
+document.getElementById('sleepForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
     const btn = document.getElementById('submitBtn');
-    
     btn.disabled = true;
-    btn.innerText = "Analyzing...";
-    res.style.display = "block";
-    res.innerHTML = "Processing...";
+    btn.textContent = 'Analysing...';
+
     const payload = {
-        snoring: document.getElementById('snoring').checked === true,
-        tired: document.getElementById('tired').checked === true,
-        observed: document.getElementById('observed').checked === true,
-        pressure: document.getElementById('pressure').checked === true
+        name: document.getElementById('name').value.trim(),
+        age: parseInt(document.getElementById('age').value) || null,
+        gender: getRadio('gender'),
+        menstrual: getRadio('menstrual'),
+        height: parseFloat(document.getElementById('height').value) || null,
+        weight: parseFloat(document.getElementById('weight').value) || null,
+        neck: parseFloat(document.getElementById('neck').value) || null,
+        conditions: {
+            diabetes: getCheckbox('cond_diabetes'),
+            hypertension: getCheckbox('cond_hypertension'),
+            thyroid: getCheckbox('cond_thyroid'),
+            pcos: getCheckbox('cond_pcos'),
+            cardiac: getCheckbox('cond_cardiac'),
+            stroke: getCheckbox('cond_stroke')
+        },
+        consumption: {
+            medications: getCheckbox('cons_medications'),
+            caffeine: getCheckbox('cons_caffeine'),
+            alcohol: getCheckbox('cons_alcohol'),
+            smoking: getCheckbox('cons_smoking')
+        },
+        work_schedule: getRadio('work_schedule'),
+        sleep_schedule: getRadio('sleep_schedule'),
+        sleep_satisfaction: getRadio('sleep_satisfaction'),
+        daytime_satisfaction: getRadio('daytime_satisfaction'),
+        daytime_tired: getRadio('daytime_tired'),
+        tired_freq: getRadio('tired_freq'),
+        insomnia_fall: getRadio('insomnia_fall'),
+        sleep_onset: getRadio('sleep_onset'),
+        insomnia_wake: getRadio('insomnia_wake'),
+        insomnia_return: getRadio('insomnia_return'),
+        hypersomnia: getRadio('hypersomnia'),
+        diff_waking: getRadio('diff_waking'),
+        nap_freq: getRadio('nap_freq'),
+        nap_duration: getRadio('nap_duration'),
+        nap_refresh: getRadio('nap_refresh'),
+        snoring: getRadio('snoring'),
+        observed: getRadio('observed'),
+        loud_snoring: getRadio('loud_snoring'),
+        wake_multiple: getRadio('wake_multiple'),
+        morning_headache: getRadio('morning_headache'),
+        dry_mouth: getRadio('dry_mouth'),
+        circadian_sleep: getRadio('circadian_sleep'),
+        sleep_type: getRadio('sleep_type'),
+        brain_fog: getRadio('brain_fog'),
+        weekend_shift: getRadio('weekend_shift'),
+        duration: getRadio('duration')
     };
+
     try {
-        const API_URL = "https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/prod/submit";
         const response = await fetch(API_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
-        const rawData = await response.json();
-        let data = rawData;
-        if (rawData.body) {
-            data = typeof rawData.body === 'string' ? JSON.parse(rawData.body) : rawData.body;
-        }
-        const score = data.score !== undefined ? data.score : 0;
-        const severity = data.risk_level || "Low Risk";
-        res.innerHTML = "Risk Level: " + severity + "<br>Score: " + score + "/4";
-        res.style.backgroundColor = score >= 3 ? "#fce8e6" : "#e6f4ea";
-        res.style.color = score >= 3 ? "#d93025" : "#137333";
+        let data = await response.json();
+        if (typeof data.body === 'string') data = JSON.parse(data.body);
+        displayResults(data);
     } catch (err) {
-        res.innerHTML = "Error: Check AWS Connection";
+        const r = document.getElementById('results');
+        r.style.display = 'block';
+        r.innerHTML = '<div class="error-msg">Unable to connect to the analysis server. Please try again.</div>';
     } finally {
         btn.disabled = false;
-        btn.innerText = "Submit Analysis";
+        btn.textContent = 'Analyse My Sleep';
     }
+});
+
+function displayResults(data) {
+    const resultsEl = document.getElementById('results');
+    resultsEl.style.display = 'block';
+
+    document.getElementById('patientName').textContent = data.name ? `Assessment for: ${data.name}` : '';
+
+    document.getElementById('bmiInfo').innerHTML = data.bmi
+        ? `<div class="bmi-info">Calculated BMI: <strong>${data.bmi}</strong></div>` : '';
+
+    document.getElementById('primaryFinding').innerHTML = `
+        <div class="primary-finding">
+            <p>Primary area of concern</p>
+            <h3>${data.primary_concern || 'General Assessment'}</h3>
+        </div>`;
+
+    const cats = data.categories || {};
+    let html = '';
+    for (const [cat, info] of Object.entries(cats)) {
+        const cls = info.risk === 'High' ? 'risk-high' : info.risk === 'Moderate' ? 'risk-moderate' : 'risk-low';
+        html += `<div class="risk-card ${cls}">
+            <div>
+                <div class="disorder-name">${cat}</div>
+                <div class="score-info">Score: ${info.score} / ${info.max}</div>
+            </div>
+            <div class="risk-badge">${info.risk} Risk</div>
+        </div>`;
+    }
+    document.getElementById('categoryScores').innerHTML = html;
+
+    const recs = data.recommendations || [];
+    document.getElementById('recommendations').innerHTML = `
+        <h4>Recommendations</h4>
+        <ul>${recs.map(r => `<li>${r}</li>`).join('')}</ul>`;
+
+    resultsEl.scrollIntoView({ behavior: 'smooth' });
 }
 </script>
 </body>
