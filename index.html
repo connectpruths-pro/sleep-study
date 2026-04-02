@@ -58,7 +58,11 @@
         .bmi-info { background: #f0f6ff; border-radius: 8px; padding: 10px 16px; margin-bottom: 16px; font-size: 0.85rem; color: #555; text-align: center; }
         .disclaimer { text-align: center; font-size: 0.78rem; color: #999; margin-top: 16px; padding-top: 16px; border-top: 1px solid #eee; line-height: 1.5; }
         .error-msg { background: #ffeaea; color: #c62828; padding: 14px; border-radius: 8px; text-align: center; font-size: 0.9rem; }
+        .download-btn { width: 100%; padding: 14px; background: #2e7d32; color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 16px; transition: opacity 0.2s; }
+        .download-btn:hover { opacity: 0.88; }
+        @media print { .submit-btn, .download-btn { display: none; } }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
@@ -438,6 +442,7 @@
     <div id="categoryScores"></div>
     <div class="recommendations" id="recommendations"></div>
     <p class="disclaimer">This assessment is for informational purposes only and does not constitute medical advice. Please consult a qualified healthcare professional for diagnosis and treatment.</p>
+    <button class="download-btn" onclick="downloadPDF()">Download PDF Report</button>
 </div>
 </div>
 
@@ -563,6 +568,25 @@ function displayResults(data) {
         <ul>${recs.map(r => `<li>${r}</li>`).join('')}</ul>`;
 
     resultsEl.scrollIntoView({ behavior: 'smooth' });
+}
+
+function downloadPDF() {
+    const name = document.getElementById('patientName').textContent || 'Sleep Report';
+    const element = document.getElementById('results');
+    const btn = element.querySelector('.download-btn');
+    btn.style.display = 'none';
+
+    const opt = {
+        margin: 10,
+        filename: `Sleep_Report_${name.replace('Assessment for: ', '') || 'Patient'}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(element).save().then(() => {
+        btn.style.display = 'block';
+    });
 }
 </script>
 </body>
