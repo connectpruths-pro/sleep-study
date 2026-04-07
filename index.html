@@ -7,46 +7,46 @@
     <style>
         /* ── DESIGN TOKENS ── */
         :root {
-            --bg:         #0f1117;
-            --bg-card:    #1a1d27;
-            --bg-input:   #141620;
-            --bg-option:  #1e2132;
-            --bg-option-h:#252a42;
-            --border:     #2e3352;
-            --border-foc: #6c7ae0;
-            --accent:     #6c7ae0;
-            --accent-dk:  #4a56c4;
-            --text:       #e8eaf6;
-            --text-muted: #8b93c4;
-            --text-label: #b0b8e6;
-            --green:      #4caf50;
-            --green-bg:   #0e2b12;
-            --red:        #f44336;
-            --red-bg:     #2b0e0e;
-            --orange:     #ff9800;
-            --orange-bg:  #2b1c00;
-            --shadow:     0 4px 24px rgba(0,0,0,0.45);
-        }
-        [data-theme="light"] {
-            --bg:         #eef2f7;
+            --bg:         #f5f0fc;
             --bg-card:    #ffffff;
-            --bg-input:   #fafbff;
-            --bg-option:  #f5f7ff;
-            --bg-option-h:#e8eaf6;
-            --border:     #c5cae9;
-            --border-foc: #3949ab;
-            --accent:     #3949ab;
-            --accent-dk:  #1a237e;
+            --bg-input:   #f8f6ff;
+            --bg-option:  #f5f0fc;
+            --bg-option-h:#ede5ff;
+            --border:     #e8dff8;
+            --border-foc: #7b3ff2;
+            --accent:     #7b3ff2;
+            --accent-dk:  #6b2fd2;
             --text:       #1a1a2e;
-            --text-muted: #666;
-            --text-label: #222;
+            --text-muted: #7b7b9e;
+            --text-label: #2d2d4a;
             --green:      #2e7d32;
             --green-bg:   #e8f5e9;
             --red:        #c62828;
             --red-bg:     #ffebee;
             --orange:     #e65100;
             --orange-bg:  #fff8e1;
-            --shadow:     0 3px 16px rgba(0,0,0,0.07);
+            --shadow:     0 2px 8px rgba(123, 63, 242, 0.08);
+        }
+        [data-theme="light"] {
+            --bg:         #f5f0fc;
+            --bg-card:    #ffffff;
+            --bg-input:   #f8f6ff;
+            --bg-option:  #f5f0fc;
+            --bg-option-h:#ede5ff;
+            --border:     #e8dff8;
+            --border-foc: #7b3ff2;
+            --accent:     #7b3ff2;
+            --accent-dk:  #6b2fd2;
+            --text:       #1a1a2e;
+            --text-muted: #7b7b9e;
+            --text-label: #2d2d4a;
+            --green:      #2e7d32;
+            --green-bg:   #e8f5e9;
+            --red:        #c62828;
+            --red-bg:     #ffebee;
+            --orange:     #e65100;
+            --orange-bg:  #fff8e1;
+            --shadow:     0 2px 8px rgba(123, 63, 242, 0.08);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -61,59 +61,89 @@
 
         /* ── HEADER ── */
         .app-header {
-            background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
-            padding: 0 32px;
+            background: #ffffff;
+            padding: 16px 32px;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 16px rgba(0,0,0,0.35);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-bottom: 1px solid var(--border);
         }
         .header-inner {
-            max-width: 820px;
+            max-width: 1000px;
             margin: 0 auto;
             display: flex;
             align-items: center;
             gap: 16px;
-            height: 68px;
         }
         .header-left {
-            width: 48px; height: 48px;
-            background: rgba(255,255,255,0.15);
+            width: 40px; height: 40px;
+            background: var(--accent);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             flex-shrink: 0;
-            backdrop-filter: blur(4px);
         }
-        .header-left svg { width: 28px; height: 28px; }
+        .header-left svg { width: 24px; height: 24px; filter: brightness(0) invert(1); }
         .header-center {
             flex: 1;
         }
         .header-title {
-            font-size: 1.15rem;
+            font-size: 1.3rem;
             font-weight: 700;
-            color: #fff;
-            letter-spacing: 0.3px;
+            color: var(--accent);
+            letter-spacing: -0.5px;
         }
         .header-sub {
-            font-size: 0.68rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.7);
-            margin-top: 2px;
-            display: block;
+            display: none;
         }
         .theme-toggle {
             width: 40px; height: 40px;
             border-radius: 50%;
-            border: 1.5px solid rgba(255,255,255,0.25);
-            background: rgba(255,255,255,0.1);
+            border: none;
+            background: transparent;
             cursor: pointer;
-            font-size: 1.1rem;
+            font-size: 1.4rem;
             display: flex; align-items: center; justify-content: center;
             transition: background 0.2s;
             flex-shrink: 0;
         }
-        .theme-toggle:hover { background: rgba(255,255,255,0.22); }
+        .theme-toggle:hover { background: var(--bg-option); }
+
+        /* ── PROGRESS TRACKER ── */
+        .progress-tracker {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+        .progress-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: default;
+            background: var(--bg-option);
+            color: var(--text-muted);
+            border: 2px solid var(--border);
+            transition: all 0.2s;
+        }
+        .progress-dot.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+            box-shadow: 0 0 16px rgba(123, 63, 242, 0.3);
+        }
+        .progress-dot.completed {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
 
         /* ── LAYOUT ── */
         .app-main { max-width: 780px; margin: 36px auto; padding: 0 20px 60px; }
@@ -290,26 +320,25 @@
         }
     </style>
 </head>
-<body data-theme="dark">
+<body data-theme="light" id="body-el">
 
 <!-- ═══ HEADER ═══ -->
 <header class="app-header">
     <div class="header-inner">
         <div class="header-left">
             <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="20" cy="20" r="18" fill="rgba(255,255,255,0.15)"/>
-                <path d="M10 20 Q20 8 30 20 Q20 32 10 20Z" fill="#fff" opacity="0.9"/>
-                <circle cx="20" cy="20" r="5" fill="#6c7ae0"/>
-                <path d="M20 6 L20 10 M20 30 L20 34 M6 20 L10 20 M30 20 L34 20" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="20" cy="20" r="18" fill="rgba(255,255,255,0)"/>
+                <path d="M10 20 Q20 8 30 20 Q20 32 10 20Z" fill="currentColor" opacity="0.9"/>
+                <circle cx="20" cy="20" r="5" fill="currentColor"/>
+                <path d="M20 6 L20 10 M20 30 L20 34 M6 20 L10 20 M30 20 L34 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
         </div>
         <div class="header-center">
-            <span class="header-title">Sleep Laboratory Solutions</span>
-            <span class="header-sub">Education &amp; Diagnostics</span>
+            <span class="header-title">Sleep Disorder Screening</span>
         </div>
         <div class="header-right">
-            <button class="theme-toggle no-print" id="themeToggle" onclick="toggleTheme()">
-                <span id="themeIcon">☀️</span>
+            <button class="theme-toggle no-print" id="themeToggle" onclick="toggleTheme()" style="display:none;">
+                <span id="themeIcon">🌙</span>
             </button>
         </div>
     </div>
@@ -322,12 +351,26 @@
 ════════════════════════════════════ -->
 <div id="form-section">
     <div class="page-title">
-        <h1>Sleep Analysis Assessment</h1>
+        <h1>Let's Get Started</h1>
         <p>Please complete all sections carefully. Your responses help us evaluate your sleep health.</p>
     </div>
 
+    <!-- PROGRESS TRACKER -->
+    <div class="progress-tracker" id="progressTracker">
+        <div class="progress-dot active" data-card="0">1</div>
+        <div class="progress-dot" data-card="1">2</div>
+        <div class="progress-dot" data-card="2">3</div>
+        <div class="progress-dot" data-card="3">4</div>
+        <div class="progress-dot" data-card="4">5</div>
+        <div class="progress-dot" data-card="5">6</div>
+        <div class="progress-dot" data-card="6">7</div>
+        <div class="progress-dot" data-card="7">8</div>
+        <div class="progress-dot" data-card="8">9</div>
+        <div class="progress-dot" data-card="9">10</div>
+    </div>
+
     <!-- BASIC INFORMATION -->
-    <div class="card">
+    <div class="card" data-progress="0">
         <h2>Basic Information</h2>
 
         <div class="form-group">
@@ -530,7 +573,7 @@
     </div>
 
     <!-- SLEEP DIFFICULTIES -->
-    <div class="card">
+    <div class="card" data-progress="1">
         <h2>Sleep Difficulties</h2>
 
         <div class="form-group">
@@ -605,7 +648,7 @@
     </div>
 
     <!-- BREATHING DURING SLEEP -->
-    <div class="card">
+    <div class="card" data-progress="2">
         <h2>Breathing During Sleep</h2>
 
         <div class="form-group">
@@ -653,7 +696,7 @@
     </div>
 
     <!-- SLEEP TIMING & RHYTHM -->
-    <div class="card">
+    <div class="card" data-progress="3">
         <h2>Sleep Timing &amp; Rhythm</h2>
 
         <div class="form-group">
@@ -1172,6 +1215,36 @@ function buildPayload(name, phone, email) {
         }
     };
 }
+
+/* ── PROGRESS TRACKING ── */
+function updateProgressTracker() {
+    const cards = document.querySelectorAll('[data-progress]');
+    let closestCard = 0;
+    let closestDistance = Infinity;
+    
+    cards.forEach(card => {
+        const rect = card.getBoundingClientRect();
+        const cardIndex = parseInt(card.getAttribute('data-progress'));
+        const distance = Math.abs(rect.top - 200);
+        
+        if (distance < closestDistance) {
+            closestDistance = distance;
+            closestCard = cardIndex;
+        }
+    });
+    
+    document.querySelectorAll('.progress-dot').forEach((dot, idx) => {
+        dot.classList.remove('active', 'completed');
+        if (idx === closestCard) {
+            dot.classList.add('active');
+        } else if (idx < closestCard) {
+            dot.classList.add('completed');
+        }
+    });
+}
+
+window.addEventListener('scroll', updateProgressTracker);
+window.addEventListener('load', updateProgressTracker);
 
 /* ── RESET ── */
 function resetForm() {
