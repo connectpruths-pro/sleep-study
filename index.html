@@ -229,7 +229,7 @@
                 <label><input type="checkbox" id="med-stroke"       /><span>Stroke History</span></label>
                 <label><input type="checkbox" id="med-anxiety"      /><span>Anxiety</span></label>
                 <label><input type="checkbox" id="med-depression"   /><span>Depression</span></label>
-                <label><input type="checkbox" id="med-stress"       /><span>Stress</span></label>
+                <label><input type="checkbox" id="med-stress"       /><span>Stress Disorders</span></label>
             </div>
         </div>
 
@@ -599,8 +599,7 @@
 </div><!-- /container -->
 
 <script>
-
-const AWS_API_URL = "https://2if3shp8ml.execute-api.ap-south-1.amazonaws.com/default";
+const AWS_API_URL = "https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/submit";
 
 /* ── Show / hide utilities ── */
 function show(id, visible) {
@@ -817,7 +816,7 @@ function buildReport(name) {
     const MED = [['Diabetes','med-diabetes'],['Hypertension','med-hypertension'],
                  ['Thyroid Disorder','med-thyroid'],['PCOS','med-pcos'],
                  ['Cardiac Disease','med-cardiac'],['Stroke History','med-stroke'],
-                 ['Anxiety','med-anxiety'],['Depression','med-depression'],['Stress','med-stress']];
+                 ['Anxiety','med-anxiety'],['Depression','med-depression'],['Stress Disorders','med-stress']];
     const medList = MED.filter(([,id]) => ck(id)).map(([n]) => n).join(', ') || 'None reported';
     const conList = [['Medications','con-meds'],['Caffeine','con-caffeine'],
                      ['Alcohol','con-alcohol'],['Smoking/Nicotine','con-smoking']]
@@ -872,35 +871,81 @@ function buildReport(name) {
     document.getElementById('res-recs').innerHTML = recs.map(t => '<div class="rec-item">'+t+'</div>').join('');
 }
 
-/* ── AWS PAYLOAD (full structured JSON) ── */
+/* ── AWS PAYLOAD ── */
 function buildPayload(name) {
-    const sc = _data.sc || calcScores();
-    const pr = topRisk(sc);
-    const s  = getT('sl-h','sl-m','sl-ap');
-    const w  = getT('wu-h','wu-m','wu-ap');
+    const sc  = _data.sc || calcScores();
+    const pr  = topRisk(sc);
+    const s   = getT('sl-h','sl-m','sl-ap');
+    const w   = getT('wu-h','wu-m','wu-ap');
+    const pid = _data.pid || ('PT-' + Math.floor(1000 + Math.random()*9000));
     const MED = [['Diabetes','med-diabetes'],['Hypertension','med-hypertension'],
                  ['Thyroid Disorder','med-thyroid'],['PCOS','med-pcos'],
                  ['Cardiac Disease','med-cardiac'],['Stroke History','med-stroke'],
-                 ['Anxiety','med-anxiety'],['Depression','med-depression'],['Stress','med-stress']];
+                 ['Anxiety','med-anxiety'],['Depression','med-depression'],['Stress Disorders','med-stress']];
+    const htVal  = parseFloat(document.getElementById('q-height').value) || null;
+    const wtVal  = parseFloat(document.getElementById('q-weight').value) || null;
+    const medList = MED.filter(([,id])=>ck(id)).map(([n])=>n);
+
     return {
+        /* DynamoDB partition key — required at top level */
+        submission_id: pid,
+
+        /* flat fields the Lambda uses for BMI and scoring */
+        name:              name,
+        age:               parseInt(document.getElementById('q-age').value) || null,
+        gender:            rv('gender'),
+        height:            htVal,
+        weight:            wtVal,
+        neck_circumference: parseFloat(document.getElementById('q-neck').value) || null,
+        medical_conditions: medList,
+        work_schedule:     rv('work'),
+        sleep_schedule:    rv('sleep-sched'),
+        sleep_duration:    _data.dur,
+        bedtime_24h:       s ? fmt24(s.h,s.m,s.ap) : null,
+        waketime_24h:      w ? fmt24(w.h,w.m,w.ap) : null,
+        snoring:           rv('snoring'),
+        observed_apnea:    rv('observed-apnea'),
+        loud_snoring:      rv('loud-snoring'),
+        multiple_wakeups:  rv('wakeup-multiple'),
+        wake_headache:     rv('headache'),
+        wake_dry_mouth:    rv('dry-mouth'),
+        difficulty_sleeping:           rv('diff-sleep'),
+        wakeup_during_night:           rv('wakeup-night'),
+        difficulty_back_sleep:         rv('back-sleep'),
+        excessive_daytime_sleepiness:  rv('excess-sleepy'),
+        difficulty_waking:             rv('diff-wakeup'),
+        daytime_tired:                 rv('daytime-tired'),
+        tired_frequency:               rv('tired-freq'),
+        nap_frequency:                 rv('nap-freq'),
+        nap_duration:                  rv('nap-dur'),
+        nap_refreshed:                 rv('nap-refresh'),
+        bedtime_struggle:              rv('bedtime-struggle'),
+        chronotype:                    rv('chronotype'),
+        brain_fog:                     rv('brain-fog'),
+        social_jetlag:                 rv('social-jetlag'),
+        symptom_duration:              rv('duration'),
+
+        /* nested patient block */
         patient: {
-            patient_id:       _data.pid,
+            patient_id:       pid,
             name:             name,
-            age:              parseInt(document.getElementById('q-age').value)    || null,
+            age:              parseInt(document.getElementById('q-age').value) || null,
             gender:           rv('gender'),
             menstrual_status: rv('gender')==='Female' ? rv('menstrual') : null,
-            height_cm:        parseFloat(document.getElementById('q-height').value) || null,
-            weight_kg:        parseFloat(document.getElementById('q-weight').value) || null,
-            neck_cm:          parseFloat(document.getElementById('q-neck').value)   || null,
+            height_cm:        htVal,
+            weight_kg:        wtVal,
+            neck_cm:          parseFloat(document.getElementById('q-neck').value) || null,
             assessment_date:  new Date().toISOString()
         },
         lifestyle: {
-            work_schedule:      rv('work'),
-            sleep_schedule:     rv('sleep-sched'),
-            sleep_duration_text: _data.dur,
-            bedtime_24h:        s ? fmt24(s.h,s.m,s.ap) : null,
-            waketime_24h:       w ? fmt24(w.h,w.m,w.ap) : null,
-            medical_conditions: MED.filter(([,id])=>ck(id)).map(([n])=>n),
+            work_schedule:       rv('work'),
+            sleep_schedule:      rv('sleep-sched'),
+            sleep_duration:      _data.dur,
+            sleep_bedtime:       s ? fmt12(s.h,s.m,s.ap) : null,
+            sleep_waketime:      w ? fmt12(w.h,w.m,w.ap) : null,
+            bedtime_24h:         s ? fmt24(s.h,s.m,s.ap) : null,
+            waketime_24h:        w ? fmt24(w.h,w.m,w.ap) : null,
+            medical_conditions:  medList,
             consumption: { medications:ck('con-meds'), caffeine:ck('con-caffeine'), alcohol:ck('con-alcohol'), smoking:ck('con-smoking') }
         },
         questionnaire: {
@@ -930,10 +975,10 @@ function buildPayload(name) {
             symptom_duration:     rv('duration')
         },
         analysis: {
-            primary_risk:         pr.name,
-            primary_risk_key:     pr.key,
-            confidence_percent:   pct(pr.s, pr.max),
-            risk_level:           lvl(pr.s, pr.max),
+            primary_risk:        pr.name,
+            primary_risk_key:    pr.key,
+            confidence_percent:  pct(pr.s, pr.max),
+            risk_level:          lvl(pr.s, pr.max),
             scores: {
                 insomnia:    { score: sc.insomnia,    max: sc.insomniaMax },
                 hypersomnia: { score: sc.hypersomnia, max: sc.hypersomMax },
