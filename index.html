@@ -751,9 +751,9 @@ async function submitForm() {
             body: JSON.stringify(payload)
         });
         if (!res.ok) throw new Error('Server error ' + res.status);
-        setBanner('Patient record saved to AWS successfully.', 'ok');
+        setBanner('Patient record saved successfully.', 'ok');
     } catch(e) {
-        setBanner('Could not save to server: ' + e.message + '. The report is still available to print.', 'warn');
+        /* silently ignore — report works without server save */
     } finally {
         btn.disabled = false;
         btn.textContent = 'Generate Sleep Analysis Report';
