@@ -591,7 +591,8 @@
             <div id="res-recs"></div>
         </div>
 
-        <button class="print-btn no-print" onclick="window.print()">Print / Save as PDF</button>
+        <button class="print-btn no-print" id="pdf-btn" onclick="window.print()">Print / Save as PDF</button>
+        <a id="pdf-download-btn" href="#" target="_blank" style="display:none; width:100%; margin-top:8px; padding:14px; background:#1a237e; color:#fff; font-size:1.05rem; font-weight:700; border:none; border-radius:9px; cursor:pointer; text-align:center; text-decoration:none; box-sizing:border-box; display:none;">Download PDF Report</a>
         <button class="new-btn no-print" onclick="resetForm()">Start New Assessment</button>
     </div>
 </div>
@@ -752,6 +753,9 @@ async function submitForm() {
         });
         if (!res.ok) throw new Error('Server error ' + res.status);
         setBanner('Patient record saved successfully.', 'ok');
+        const pdfUrl = 'https://4a8c465e-d793-4529-bb91-1c5fcd83d976-00-26pqet0rkpacc.janeway.replit.dev/api/report/' + _data.pid;
+        const dlBtn = document.getElementById('pdf-download-btn');
+        if (dlBtn) { dlBtn.setAttribute('href', pdfUrl); dlBtn.style.display = 'block'; }
     } catch(e) {
         /* silently ignore — report works without server save */
     } finally {
@@ -889,6 +893,7 @@ function buildPayload(name) {
     return {
         /* DynamoDB partition key — required at top level */
         submission_id: pid,
+        report_pdf_url: 'https://4a8c465e-d793-4529-bb91-1c5fcd83d976-00-26pqet0rkpacc.janeway.replit.dev/api/report/' + pid,
 
         /* flat fields the Lambda uses for BMI and scoring */
         name:              name,
