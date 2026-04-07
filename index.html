@@ -797,7 +797,6 @@
         </div>
 
         <button class="print-btn no-print" id="pdf-btn" onclick="window.print()">Print / Save as PDF</button>
-        <a id="pdf-download-btn" href="#" target="_blank" style="display:none; width:100%; margin-top:8px; padding:14px; background:#1a237e; color:#fff; font-size:1.05rem; font-weight:700; border:none; border-radius:10px; cursor:pointer; text-align:center; text-decoration:none; box-sizing:border-box;">Download PDF Report</a>
         <button class="btn-outline no-print" onclick="resetForm()">Start New Assessment</button>
     </div>
 </div>
@@ -1215,36 +1214,6 @@ function buildPayload(name, phone, email) {
         }
     };
 }
-
-/* ── PROGRESS TRACKING ── */
-function updateProgressTracker() {
-    const cards = document.querySelectorAll('[data-progress]');
-    let closestCard = 0;
-    let closestDistance = Infinity;
-    
-    cards.forEach(card => {
-        const rect = card.getBoundingClientRect();
-        const cardIndex = parseInt(card.getAttribute('data-progress'));
-        const distance = Math.abs(rect.top - 200);
-        
-        if (distance < closestDistance) {
-            closestDistance = distance;
-            closestCard = cardIndex;
-        }
-    });
-    
-    document.querySelectorAll('.progress-dot').forEach((dot, idx) => {
-        dot.classList.remove('active', 'completed');
-        if (idx === closestCard) {
-            dot.classList.add('active');
-        } else if (idx < closestCard) {
-            dot.classList.add('completed');
-        }
-    });
-}
-
-window.addEventListener('scroll', updateProgressTracker);
-window.addEventListener('load', updateProgressTracker);
 
 /* ── RESET ── */
 function resetForm() {
