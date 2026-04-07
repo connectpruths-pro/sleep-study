@@ -437,7 +437,7 @@
                 <label class="checkbox-option"><input type="checkbox" id="med-stroke"       /><span>Stroke History</span></label>
                 <label class="checkbox-option"><input type="checkbox" id="med-anxiety"      /><span>Anxiety</span></label>
                 <label class="checkbox-option"><input type="checkbox" id="med-depression"   /><span>Depression</span></label>
-                <label class="checkbox-option"><input type="checkbox" id="med-stress"       /><span>Stress Disorders</span></label>
+                <label class="checkbox-option"><input type="checkbox" id="med-stress"       /><span>Stress</span></label>
             </div>
         </div>
 
@@ -1041,7 +1041,7 @@ function buildReport(name, phone, email) {
     const MED = [['Diabetes','med-diabetes'],['Hypertension','med-hypertension'],
                  ['Thyroid Disorder','med-thyroid'],['PCOS','med-pcos'],
                  ['Cardiac Disease','med-cardiac'],['Stroke History','med-stroke'],
-                 ['Anxiety','med-anxiety'],['Depression','med-depression'],['Stress Disorders','med-stress']];
+                 ['Anxiety','med-anxiety'],['Depression','med-depression'],['Stress','med-stress']];
     const medList = MED.filter(([,id]) => ck(id)).map(([n]) => n).join(', ') || 'None reported';
     const conList = [['Medications','con-meds'],['Caffeine','con-caffeine'],
                      ['Alcohol','con-alcohol'],['Smoking/Nicotine','con-smoking']]
@@ -1106,7 +1106,7 @@ function buildPayload(name, phone, email) {
     const MED = [['Diabetes','med-diabetes'],['Hypertension','med-hypertension'],
                  ['Thyroid Disorder','med-thyroid'],['PCOS','med-pcos'],
                  ['Cardiac Disease','med-cardiac'],['Stroke History','med-stroke'],
-                 ['Anxiety','med-anxiety'],['Depression','med-depression'],['Stress Disorders','med-stress']];
+                 ['Anxiety','med-anxiety'],['Depression','med-depression'],['Stress','med-stress']];
     const htVal  = parseFloat(document.getElementById('q-height').value) || null;
     const wtVal  = parseFloat(document.getElementById('q-weight').value) || null;
     const medList = MED.filter(([,id])=>ck(id)).map(([n])=>n);
