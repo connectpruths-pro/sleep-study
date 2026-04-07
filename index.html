@@ -1,1235 +1,1507 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sleep Analysis Assessment</title>
-    <style>
-        /* ── DESIGN TOKENS ── */
-        :root {
-            --bg:         #f5f0fc;
-            --bg-card:    #ffffff;
-            --bg-input:   #f8f6ff;
-            --bg-option:  #f5f0fc;
-            --bg-option-h:#ede5ff;
-            --border:     #e8dff8;
-            --border-foc: #7b3ff2;
-            --accent:     #7b3ff2;
-            --accent-dk:  #6b2fd2;
-            --text:       #1a1a2e;
-            --text-muted: #7b7b9e;
-            --text-label: #2d2d4a;
-            --green:      #2e7d32;
-            --green-bg:   #e8f5e9;
-            --red:        #c62828;
-            --red-bg:     #ffebee;
-            --orange:     #e65100;
-            --orange-bg:  #fff8e1;
-            --shadow:     0 2px 8px rgba(123, 63, 242, 0.08);
-        }
-        [data-theme="light"] {
-            --bg:         #f5f0fc;
-            --bg-card:    #ffffff;
-            --bg-input:   #f8f6ff;
-            --bg-option:  #f5f0fc;
-            --bg-option-h:#ede5ff;
-            --border:     #e8dff8;
-            --border-foc: #7b3ff2;
-            --accent:     #7b3ff2;
-            --accent-dk:  #6b2fd2;
-            --text:       #1a1a2e;
-            --text-muted: #7b7b9e;
-            --text-label: #2d2d4a;
-            --green:      #2e7d32;
-            --green-bg:   #e8f5e9;
-            --red:        #c62828;
-            --red-bg:     #ffebee;
-            --orange:     #e65100;
-            --orange-bg:  #fff8e1;
-            --shadow:     0 2px 8px rgba(123, 63, 242, 0.08);
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Sleep Disorder Screening Questionnaire — a clinical screening tool for Insomnia, Hypersomnia, Obstructive Sleep Apnea, and Circadian Rhythm Disorders." />
+  <title>Sleep Disorder Screening — SleepMed</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+/* ═══════════════════════════════════════════════
+   SLEEPMED — PREMIUM HEALTHCARE DESIGN SYSTEM
+   ═══════════════════════════════════════════════ */
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+/* ─── DESIGN TOKENS ─── */
+:root {
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --radius: 20px;
+  --radius-sm: 12px;
+  --radius-xs: 8px;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.16);
+  --brand-gradient: linear-gradient(135deg, #143C8C, #6A1B9A, #B0127D);
+  --brand-gradient-h: linear-gradient(90deg, #143C8C, #6A1B9A, #B0127D);
+  --brand-start: #143C8C;
+  --brand-mid: #6A1B9A;
+  --brand-end: #B0127D;
+  --success: #16a34a;
+  --success-bg: rgba(22, 163, 74, 0.08);
+  --success-border: rgba(22, 163, 74, 0.25);
+  --warning: #d97706;
+  --warning-bg: rgba(217, 119, 6, 0.08);
+  --warning-border: rgba(217, 119, 6, 0.25);
+  --danger: #dc2626;
+  --danger-bg: rgba(220, 38, 38, 0.08);
+  --danger-border: rgba(220, 38, 38, 0.25);
+  --header-h: 64px;
+  --progress-h: 72px;
+}
 
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            transition: background 0.25s, color 0.25s;
-        }
+/* ─── DARK THEME (default) ─── */
+[data-theme="dark"] {
+  --bg-body: #0F172A;
+  --bg-card: rgba(30, 41, 59, 0.75);
+  --bg-card-solid: #1E293B;
+  --bg-input: rgba(15, 23, 42, 0.6);
+  --bg-option: rgba(30, 41, 59, 0.5);
+  --bg-option-hover: rgba(51, 65, 85, 0.6);
+  --bg-header: rgba(15, 23, 42, 0.92);
+  --border-card: rgba(100, 116, 139, 0.15);
+  --border-input: rgba(100, 116, 139, 0.25);
+  --border-option: rgba(100, 116, 139, 0.18);
+  --text-primary: #F1F5F9;
+  --text-secondary: #94A3B8;
+  --text-hint: #64748B;
+  --text-on-brand: #ffffff;
+  --accent: #818CF8;
+  --accent-glow: rgba(129, 140, 248, 0.2);
+  --step-bg: rgba(30, 41, 59, 0.6);
+  --step-text: #64748B;
+  --step-done: #818CF8;
+  color-scheme: dark;
+}
 
-        /* ── HEADER ── */
-        .app-header {
-            background: #ffffff;
-            padding: 16px 32px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border-bottom: 1px solid var(--border);
-        }
-        .header-inner {
-            max-width: 1000px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        .header-left {
-            width: 40px; height: 40px;
-            background: var(--accent);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-        }
-        .header-left svg { width: 24px; height: 24px; filter: brightness(0) invert(1); }
-        .header-center {
-            flex: 1;
-        }
-        .header-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--accent);
-            letter-spacing: -0.5px;
-        }
-        .header-sub {
-            display: none;
-        }
-        .theme-toggle {
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            font-size: 1.4rem;
-            display: flex; align-items: center; justify-content: center;
-            transition: background 0.2s;
-            flex-shrink: 0;
-        }
-        .theme-toggle:hover { background: var(--bg-option); }
+/* ─── LIGHT THEME ─── */
+[data-theme="light"] {
+  --bg-body: #F4F6FA;
+  --bg-card: rgba(255, 255, 255, 0.82);
+  --bg-card-solid: #ffffff;
+  --bg-input: rgba(241, 245, 249, 0.8);
+  --bg-option: rgba(241, 245, 249, 0.6);
+  --bg-option-hover: rgba(226, 232, 240, 0.7);
+  --bg-header: rgba(255, 255, 255, 0.92);
+  --border-card: rgba(148, 163, 184, 0.18);
+  --border-input: rgba(148, 163, 184, 0.3);
+  --border-option: rgba(148, 163, 184, 0.2);
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-hint: #94A3B8;
+  --text-on-brand: #ffffff;
+  --accent: #6A1B9A;
+  --accent-glow: rgba(106, 27, 154, 0.15);
+  --step-bg: rgba(226, 232, 240, 0.6);
+  --step-text: #94A3B8;
+  --step-done: #6A1B9A;
+  color-scheme: light;
+}
 
-        /* ── PROGRESS TRACKER ── */
-        .progress-tracker {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 32px;
-            flex-wrap: wrap;
-        }
-        .progress-dot {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: default;
-            background: var(--bg-option);
-            color: var(--text-muted);
-            border: 2px solid var(--border);
-            transition: all 0.2s;
-        }
-        .progress-dot.active {
-            background: var(--accent);
-            color: #fff;
-            border-color: var(--accent);
-            box-shadow: 0 0 16px rgba(123, 63, 242, 0.3);
-        }
-        .progress-dot.completed {
-            background: var(--accent);
-            color: #fff;
-            border-color: var(--accent);
-        }
+/* ═══════════════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg-body);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.4s ease, color 0.3s ease;
+}
 
-        /* ── LAYOUT ── */
-        .app-main { max-width: 780px; margin: 36px auto; padding: 0 20px 60px; }
-        .page-title { text-align: center; margin-bottom: 32px; }
-        .page-title h1 { font-size: 1.9rem; color: var(--accent); font-weight: 800; }
-        .page-title p  { color: var(--text-muted); font-size: 0.9rem; margin-top: 6px; }
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.4s ease;
+}
+[data-theme="dark"] body::before {
+  background:
+    radial-gradient(ellipse 900px 700px at 15% 10%, rgba(20, 60, 140, 0.12), transparent),
+    radial-gradient(ellipse 700px 600px at 85% 85%, rgba(176, 18, 125, 0.08), transparent),
+    radial-gradient(ellipse 500px 400px at 50% 50%, rgba(106, 27, 154, 0.06), transparent);
+}
+[data-theme="light"] body::before {
+  background:
+    radial-gradient(ellipse 900px 700px at 15% 10%, rgba(20, 60, 140, 0.05), transparent),
+    radial-gradient(ellipse 700px 600px at 85% 85%, rgba(176, 18, 125, 0.04), transparent);
+}
 
-        /* ── CARDS ── */
-        .card {
-            background: var(--bg-card);
-            border-radius: 14px;
-            padding: 28px 32px;
-            box-shadow: var(--shadow);
-            margin-bottom: 24px;
-            border: 1px solid var(--border);
-            transition: background 0.25s, border-color 0.25s;
-        }
-        .card h2 {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--accent);
-            margin-bottom: 22px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--border);
-        }
+/* ═══════════════════════════════════════════════
+   FIXED HEADER
+   ═══════════════════════════════════════════════ */
+.app-header {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: var(--bg-header);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-card);
+  z-index: 1000;
+  transition: background 0.3s ease;
+}
+.header-inner {
+  max-width: 1100px; margin: 0 auto; height: 100%;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+}
+.header-left { display: flex; align-items: center; gap: 12px; }
+.header-logo-wrap {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: var(--brand-gradient);
+  display: flex; align-items: center; justify-content: center;
+}
+.header-logo-wrap svg { width: 22px; height: 22px; color: #fff; }
+.header-center { position: absolute; left: 50%; transform: translateX(-50%); }
+.header-title {
+  font-size: 1.05rem; font-weight: 700;
+  background: var(--brand-gradient);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; letter-spacing: -0.3px;
+}
+.header-right { display: flex; align-items: center; }
+.theme-toggle {
+  width: 42px; height: 42px;
+  border: 1px solid var(--border-option); border-radius: 50%;
+  background: var(--bg-option); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition); font-size: 1.2rem;
+}
+.theme-toggle:hover { background: var(--bg-option-hover); border-color: var(--accent); transform: scale(1.05); }
 
-        /* ── FORM GROUPS ── */
-        .form-group { margin-bottom: 20px; }
-        .form-group label { font-weight: 600; color: var(--text-label); font-size: 0.95rem; margin-bottom: 8px; display: block; }
-        .hint { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; display: block; }
-        .inline-fields { display: flex; gap: 14px; }
-        .inline-fields > * { flex: 1; }
+/* ═══════════════════════════════════════════════
+   STEP PROGRESS BAR
+   ═══════════════════════════════════════════════ */
+.step-progress {
+  position: fixed; top: var(--header-h); left: 0; right: 0;
+  height: var(--progress-h);
+  background: var(--bg-header);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-card);
+  z-index: 999; overflow-x: auto; overflow-y: hidden;
+  transition: background 0.3s ease;
+}
+.step-progress::-webkit-scrollbar { height: 0; }
+.step-progress-inner {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; height: 100%; padding: 0 16px;
+  min-width: max-content; margin: 0 auto;
+}
+.step-item {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+  cursor: default; flex-shrink: 0; padding: 0 6px;
+}
+.step-num {
+  width: 30px; height: 30px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 700;
+  background: var(--step-bg); color: var(--step-text);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.step-label { display: none; }
+.step-connector {
+  width: 24px; height: 2px; background: var(--step-bg);
+  flex-shrink: 0; transition: background 0.4s ease; border-radius: 2px;
+}
+.step-item.active .step-num {
+  background: var(--brand-gradient); color: #fff;
+  box-shadow: 0 2px 12px rgba(106, 27, 154, 0.4);
+  transform: scale(1.1);
+}
+.step-item.active .step-label { color: var(--text-primary); font-weight: 600; }
+.step-item.completed .step-num { background: var(--step-done); color: #fff; }
+.step-connector.done { background: var(--step-done); }
 
-        /* ── INPUTS ── */
-        .input, input[type="text"], input[type="number"], input[type="tel"], input[type="email"], select {
-            width: 100%; padding: 10px 14px;
-            border: 1.5px solid var(--border);
-            border-radius: 8px;
-            font-size: 0.93rem;
-            background: var(--bg-input);
-            color: var(--text);
-            transition: border-color 0.15s, background 0.25s;
-        }
-        input:focus, select:focus { outline: none; border-color: var(--border-foc); }
+/* ═══════════════════════════════════════════════
+   MAIN CONTENT
+   ═══════════════════════════════════════════════ */
+.app-main {
+  position: relative; z-index: 1;
+  max-width: 780px; margin: 0 auto;
+  padding: calc(var(--header-h) + var(--progress-h) + 32px) 20px 60px;
+}
 
-        /* ── RADIO / CHECKBOX ── */
-        .radio-group, .check-group { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
-        .radio-option, .radio-group label, .check-group label {
-            display: flex; align-items: center; gap: 10px; cursor: pointer;
-            padding: 9px 13px; border-radius: 8px;
-            background: var(--bg-option); font-size: 0.9rem;
-            transition: background 0.15s;
-            border: 1px solid transparent;
-        }
-        .radio-option:hover, .radio-group label:hover, .check-group label:hover {
-            background: var(--bg-option-h);
-            border-color: var(--border);
-        }
-        .radio-group input, .check-group input { width: 17px; height: 17px; accent-color: var(--accent); flex-shrink: 0; }
+/* ═══════════════════════════════════════════════
+   STEP VISIBILITY & ANIMATION
+   ═══════════════════════════════════════════════ */
+.step { display: none; animation: fadeSlideIn 0.5s ease forwards; }
+.step.active { display: block; }
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-        /* ── CHECKBOX GRID ── */
-        .checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 8px; }
-        .checkbox-option {
-            display: flex; align-items: center; gap: 10px; cursor: pointer;
-            padding: 11px 14px; border-radius: 8px; background: var(--bg-option);
-            font-size: 0.91rem; border: 1.5px solid transparent; transition: all 0.15s;
-        }
-        .checkbox-option:hover { background: var(--bg-option-h); border-color: var(--border); }
-        .checkbox-option:has(input:checked) { background: var(--bg-option-h); border-color: var(--accent); }
-        .checkbox-option input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--accent); flex-shrink: 0; }
+/* ═══════════════════════════════════════════════
+   GLASSMORPHISM CARD
+   ═══════════════════════════════════════════════ */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  padding: 40px 36px; margin-bottom: 16px;
+  box-shadow: var(--shadow-md);
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.card-hero { text-align: center; padding: 48px 40px; }
+.hero-badge { margin-bottom: 20px; }
+.hero-logo-wrap {
+  width: 80px; height: 80px; border-radius: 20px;
+  background: var(--brand-gradient);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto;
+  box-shadow: 0 4px 20px rgba(106, 27, 154, 0.3);
+}
+.hero-logo-wrap svg { width: 48px; height: 48px; color: #fff; }
+.card h1 {
+  font-size: 2.1rem; font-weight: 800;
+  background: var(--brand-gradient);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; margin-bottom: 8px; letter-spacing: -0.5px;
+}
+.card h2 {
+  font-size: 1.3rem; font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 28px; padding-bottom: 14px;
+  border-bottom: 2px solid transparent;
+  border-image: var(--brand-gradient-h) 1;
+}
+.subtitle { color: var(--text-secondary); font-size: 1.05rem; margin-bottom: 28px; }
 
-        /* ── TIME PICKERS ── */
-        .time-row-wrap { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 10px; }
-        .time-box {
-            flex: 1; min-width: 190px;
-            background: var(--bg-option);
-            border-radius: 9px; padding: 13px 15px;
-            border: 1.5px solid var(--border);
-            transition: border-color 0.15s;
-        }
-        .time-box:focus-within { border-color: var(--border-foc); }
-        .time-box-label { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
-        .time-selects { display: flex; align-items: center; gap: 5px; }
-        .time-selects select { width: auto; padding: 8px 10px; min-width: 68px; flex: 0 0 auto; }
-        .time-selects .colon { font-size: 1.1rem; font-weight: 800; color: var(--accent); }
-        .time-selects .ampm-sel { min-width: 78px; }
-        .duration-hint { font-size: 0.83rem; color: var(--green); font-weight: 600; margin-top: 8px; display: none; }
+/* ═══════════════════════════════════════════════
+   NOTICE BOXES
+   ═══════════════════════════════════════════════ */
+.notice-box {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 20px 22px; border-radius: var(--radius-sm);
+  margin: 20px 0; text-align: left;
+}
+.notice-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+.notice-box h3 { font-size: 0.92rem; font-weight: 700; margin-bottom: 6px; }
+.notice-box p { font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 6px; line-height: 1.6; }
+.notice-box p:last-child { margin-bottom: 0; }
+.notice-info { background: rgba(129, 140, 248, 0.06); border: 1px solid rgba(129, 140, 248, 0.15); }
+.notice-info h3 { color: var(--accent); }
+.notice-recommend { background: rgba(20, 60, 140, 0.06); border: 1px solid rgba(20, 60, 140, 0.15); }
+.notice-recommend h3 { color: var(--brand-start); }
+[data-theme="dark"] .notice-recommend { background: rgba(129, 140, 248, 0.06); border-color: rgba(129, 140, 248, 0.15); }
+[data-theme="dark"] .notice-recommend h3 { color: var(--accent); }
+.notice-disclaimer { background: rgba(100, 116, 139, 0.06); border: 1px solid rgba(100, 116, 139, 0.15); }
+.notice-disclaimer h3 { color: var(--text-hint); }
 
-        /* ── DURATION ROW ── */
-        .dur-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
-        .dur-row input { max-width: 90px; }
-        .dur-row span { color: var(--text-muted); font-size: 0.9rem; }
+/* ═══════════════════════════════════════════════
+   CONSENT
+   ═══════════════════════════════════════════════ */
+.consent-label {
+  display: flex; align-items: flex-start; gap: 12px; cursor: pointer;
+  margin: 24px 0; padding: 16px 20px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-option);
+  transition: var(--transition); text-align: left;
+}
+.consent-label:hover { border-color: var(--accent); background: var(--accent-glow); }
+.consent-label input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--accent); margin-top: 2px; flex-shrink: 0; }
+.consent-label span { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.5; }
 
-        /* ── CONDITIONAL BLOCKS ── */
-        .conditional { margin-left: 24px; margin-top: 10px; padding-left: 14px; border-left: 3px solid var(--border); }
-        .hidden { display: none !important; }
+/* ═══════════════════════════════════════════════
+   FORM ELEMENTS
+   ═══════════════════════════════════════════════ */
+.form-group { margin-bottom: 24px; }
+.form-group > label { display: block; font-weight: 600; font-size: 0.95rem; margin-bottom: 10px; color: var(--text-primary); }
+.hint { font-weight: 400; font-size: 0.82rem; color: var(--text-hint); }
+.input {
+  width: 100%; padding: 12px 16px;
+  background: var(--bg-input); border: 1px solid var(--border-input);
+  border-radius: var(--radius-xs); color: var(--text-primary);
+  font-family: var(--font); font-size: 0.95rem;
+  transition: var(--transition); outline: none;
+}
+.input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+.input::placeholder { color: var(--text-hint); }
+input[type="time"] { color-scheme: inherit; }
 
-        /* ── BUTTONS ── */
-        .btn { border: none; border-radius: 10px; cursor: pointer; font-weight: 700; transition: all 0.2s; }
-        .btn-primary { background: var(--accent); color: #fff; }
-        .btn-primary:hover { background: var(--accent-dk); }
-        .btn-primary:disabled { background: #3d4580; color: #7a85c0; cursor: not-allowed; }
-        .btn-lg { width: 100%; padding: 15px; font-size: 1.1rem; margin-top: 8px; }
-        .btn-outline {
-            width: 100%; padding: 11px; background: transparent;
-            color: var(--accent); font-size: 0.95rem; font-weight: 700;
-            border: 2px solid var(--accent); border-radius: 10px;
-            cursor: pointer; margin-top: 10px; transition: background 0.2s;
-        }
-        .btn-outline:hover { background: var(--bg-option-h); }
+/* ═══════════════════════════════════════════════
+   RADIO & CHECKBOX OPTIONS
+   ═══════════════════════════════════════════════ */
+.radio-group, .checkbox-grid { display: flex; flex-direction: column; gap: 8px; }
+.checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.radio-option, .checkbox-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px; border-radius: var(--radius-xs);
+  border: 1px solid var(--border-option); background: var(--bg-option);
+  cursor: pointer; transition: var(--transition);
+  font-size: 0.92rem; color: var(--text-secondary);
+}
+.radio-option:hover, .checkbox-option:hover {
+  border-color: rgba(106, 27, 154, 0.4);
+  background: var(--bg-option-hover); color: var(--text-primary);
+  transform: translateY(-1px);
+}
+.radio-option input, .checkbox-option input { accent-color: var(--accent); width: 18px; height: 18px; flex-shrink: 0; }
+.radio-option.selected, .checkbox-option.selected { border-color: var(--accent); background: var(--accent-glow); color: var(--text-primary); }
+.conditional {
+  border-left: 3px solid var(--accent);
+  padding-left: 20px; margin-left: 8px;
+  animation: fadeSlideIn 0.35s ease forwards;
+}
+.inline-fields { display: flex; gap: 16px; }
+.inline-fields > div { flex: 1; }
+.inline-fields label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px; display: block; }
 
-        /* ── ERROR ── */
-        .error-msg {
-            background: var(--red-bg); border: 1px solid var(--red);
-            color: var(--red); padding: 11px 15px; border-radius: 8px;
-            margin-top: 14px; display: none; font-size: 0.9rem;
-        }
+/* ═══════════════════════════════════════════════
+   BUTTONS
+   ═══════════════════════════════════════════════ */
+.btn-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 32px; }
+.btn {
+  padding: 13px 32px; border: none; border-radius: var(--radius-xs);
+  font-family: var(--font); font-size: 0.95rem; font-weight: 600;
+  cursor: pointer; transition: var(--transition); letter-spacing: 0.3px;
+}
+.btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.btn-primary { background: var(--brand-gradient); color: var(--text-on-brand); box-shadow: 0 4px 16px rgba(106, 27, 154, 0.3); }
+.btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(106, 27, 154, 0.4); }
+.btn-primary:active:not(:disabled) { transform: translateY(0); }
+.btn-lg { padding: 16px 48px; font-size: 1.05rem; border-radius: var(--radius-sm); }
+.btn-secondary { background: var(--bg-option); color: var(--text-secondary); border: 1px solid var(--border-option); }
+.btn-secondary:hover { background: var(--bg-option-hover); color: var(--text-primary); border-color: var(--border-input); }
 
-        /* ── RESULTS ── */
-        #results { display: none; }
-        .print-btn {
-            width: 100%; padding: 14px; background: #2e7d32; color: #fff;
-            font-size: 1.05rem; font-weight: 700; border: none; border-radius: 10px;
-            cursor: pointer; margin-top: 8px; transition: background 0.2s;
-        }
-        .print-btn:hover { background: #1b5e20; }
+/* ═══════════════════════════════════════════════
+   RESULTS PAGE
+   ═══════════════════════════════════════════════ */
+.card-results { padding: 40px 36px; }
+.results-intro { color: var(--text-secondary); margin-bottom: 28px; font-size: 0.95rem; }
+.results-block { margin-bottom: 28px; }
+.results-block h3 { font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 14px; }
+.results-grid { display: flex; flex-direction: column; gap: 16px; margin-bottom: 28px; }
 
-        /* ── REPORT SECTIONS ── */
-        .result-section { margin-bottom: 20px; }
-        .result-section h3 { font-size: 1rem; color: var(--accent); margin-bottom: 12px; padding-bottom: 7px; border-bottom: 1.5px solid var(--border); }
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .info-item { font-size: 0.9rem; padding: 9px 13px; background: var(--bg-option); border-radius: 7px; border: 1px solid var(--border); }
-        .info-item strong { color: var(--accent); display: block; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.result-card {
+  border-radius: var(--radius-sm); padding: 24px;
+  border: 1px solid var(--border-card);
+  transition: var(--transition); position: relative; overflow: hidden;
+  display: flex; gap: 20px; align-items: flex-start;
+}
+.result-card::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 4px; }
+.result-card-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+.result-card-body { flex: 1; }
+.result-card-body h4 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+.result-card-tier { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; display: inline-block; padding: 2px 10px; border-radius: 20px; }
+.result-card-desc { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 8px; }
+.result-card-rec { font-size: 0.82rem; color: var(--text-hint); font-style: italic; }
+.result-card.tier-low { background: var(--success-bg); border-color: var(--success-border); }
+.result-card.tier-low::before { background: var(--success); }
+.result-card.tier-low .result-card-icon { background: var(--success-bg); color: var(--success); }
+.result-card.tier-low h4 { color: var(--success); }
+.result-card.tier-low .result-card-tier { background: var(--success-bg); color: var(--success); border: 1px solid var(--success-border); }
+.result-card.tier-moderate { background: var(--warning-bg); border-color: var(--warning-border); }
+.result-card.tier-moderate::before { background: var(--warning); }
+.result-card.tier-moderate .result-card-icon { background: var(--warning-bg); color: var(--warning); }
+.result-card.tier-moderate h4 { color: var(--warning); }
+.result-card.tier-moderate .result-card-tier { background: var(--warning-bg); color: var(--warning); border: 1px solid var(--warning-border); }
+.result-card.tier-high { background: var(--danger-bg); border-color: var(--danger-border); }
+.result-card.tier-high::before { background: var(--danger); }
+.result-card.tier-high .result-card-icon { background: var(--danger-bg); color: var(--danger); }
+.result-card.tier-high h4 { color: var(--danger); }
+.result-card.tier-high .result-card-tier { background: var(--danger-bg); color: var(--danger); border: 1px solid var(--danger-border); }
+.no-concerns { text-align: center; padding: 40px 28px; background: var(--success-bg); border: 1px solid var(--success-border); border-radius: var(--radius-sm); }
+.no-concerns h4 { color: var(--success); font-size: 1.1rem; margin-bottom: 8px; }
+.no-concerns p { color: var(--text-secondary); font-size: 0.92rem; }
+.comorbid-section { background: var(--warning-bg); border: 1px solid var(--warning-border); border-radius: var(--radius-sm); padding: 24px; margin-bottom: 24px; }
+.comorbid-section h3 { font-size: 1rem; font-weight: 700; color: var(--warning); margin-bottom: 14px; }
+.comorbid-section ul { list-style: none; padding: 0; }
+.comorbid-section li { padding: 10px 0; color: var(--text-secondary); font-size: 0.9rem; border-bottom: 1px solid var(--warning-border); }
+.comorbid-section li:last-child { border-bottom: none; }
+.comorbid-section li strong { color: var(--warning); }
 
-        /* ── RESULT CARDS ── */
-        .result-card { border-radius: 12px; padding: 22px 24px; margin-bottom: 12px; }
-        .result-card.tier-high   { background: var(--red-bg);    border-left: 5px solid var(--red); }
-        .result-card.tier-moderate { background: var(--orange-bg); border-left: 5px solid var(--orange); }
-        .result-card.tier-low    { background: var(--green-bg);   border-left: 5px solid var(--green); }
-        .risk-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 5px; }
-        .risk-name  { font-size: 1.3rem; font-weight: 800; color: var(--text); margin-bottom: 4px; }
-        .risk-desc  { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px; }
-        .risk-badge { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; color: #fff; }
-        .result-card.tier-high   .risk-badge { background: var(--red); }
-        .result-card.tier-moderate .risk-badge { background: var(--orange); }
-        .result-card.tier-low    .risk-badge { background: var(--green); }
-        .risk-score-txt { font-size: 0.85rem; color: var(--text-muted); margin-left: 10px; }
-        .conf-wrap { margin-top: 12px; }
-        .conf-label { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 4px; }
-        .conf-track { background: rgba(255,255,255,0.08); border-radius: 4px; height: 8px; }
-        .conf-fill  { height: 8px; border-radius: 4px; }
-        .result-card.tier-high   .conf-fill { background: var(--red); }
-        .result-card.tier-moderate .conf-fill { background: var(--orange); }
-        .result-card.tier-low    .conf-fill { background: var(--green); }
-        .no-risk-card { background: var(--green-bg); border: 1.5px solid var(--green); border-radius: 10px; padding: 18px; text-align: center; color: var(--green); font-weight: 600; }
+/* Patient info section in results */
+.patient-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
+.patient-info-item { background: var(--bg-option); border: 1px solid var(--border-option); border-radius: var(--radius-xs); padding: 10px 14px; font-size: 0.88rem; }
+.patient-info-item strong { display: block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-hint); margin-bottom: 3px; }
 
-        /* ── SUMMARY ROWS ── */
-        .resp-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 9px 13px; background: var(--bg-option); border-radius: 7px; margin-bottom: 7px; font-size: 0.88rem; gap: 12px; border: 1px solid var(--border); }
-        .resp-q { color: var(--text-muted); flex: 1; }
-        .resp-a { color: var(--accent); font-weight: 600; text-align: right; flex-shrink: 0; max-width: 45%; }
-        .rec-item { padding: 11px 15px; background: var(--bg-option); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; margin-bottom: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
+/* AWS Banner */
+.aws-banner { display: none; padding: 12px 18px; border-radius: var(--radius-xs); border: 1px solid; font-size: 0.88rem; font-weight: 600; margin-bottom: 20px; }
+.aws-banner.ok { background: var(--success-bg); color: var(--success); border-color: var(--success-border); }
+.aws-banner.warn { background: var(--warning-bg); color: var(--warning); border-color: var(--warning-border); }
 
-        /* ── AWS STATUS BANNER ── */
-        .aws-banner { display: none; padding: 10px 16px; border-radius: 8px; border: 1.5px solid; font-size: 0.88rem; font-weight: 600; margin-bottom: 14px; }
-        .aws-banner.ok   { background: var(--green-bg); color: var(--green); border-color: var(--green); }
-        .aws-banner.warn { background: var(--orange-bg); color: var(--orange); border-color: var(--orange); }
-
-        /* ── PRINT ── */
-        @media print {
-            body { background: #fff; color: #111; }
-            .no-print { display: none !important; }
-            .app-header { display: none; }
-            .result-card, .info-item, .resp-row, .rec-item { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-        }
-    </style>
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .header-center { display: none; }
+  .step-progress-inner { justify-content: flex-start; padding: 0 12px; }
+  .step-connector { width: 16px; }
+  .step-label { font-size: 0.58rem; }
+  .step-num { width: 26px; height: 26px; font-size: 0.68rem; }
+}
+@media (max-width: 600px) {
+  .app-main { padding-left: 10px; padding-right: 10px; }
+  .card { padding: 24px 18px; border-radius: var(--radius-sm); }
+  .card-hero { padding: 32px 18px; }
+  .card h1 { font-size: 1.6rem; }
+  .checkbox-grid { grid-template-columns: 1fr; }
+  .inline-fields { flex-direction: column; gap: 12px; }
+  .btn-row { flex-direction: column-reverse; }
+  .btn { width: 100%; text-align: center; }
+  .result-card { flex-direction: column; gap: 12px; }
+  .result-card-icon { width: 40px; height: 40px; font-size: 1.2rem; }
+  .patient-info-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 400px) {
+  .step-label { display: none; }
+  .step-progress-inner { gap: 0; }
+  .step-connector { width: 12px; }
+}
+@media print {
+  .app-header, .step-progress, .btn-row, .no-print { display: none !important; }
+  .app-main { padding-top: 20px; }
+  body { background: #fff; color: #111; }
+  .card { box-shadow: none; border: 1px solid #ddd; }
+}
+  </style>
 </head>
-<body data-theme="light" id="body-el">
+<body>
 
-<!-- ═══ HEADER ═══ -->
-<header class="app-header">
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- FIXED HEADER                                    -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <header class="app-header" id="appHeader">
     <div class="header-inner">
-        <div class="header-left">
+      <div class="header-left">
+        <div class="header-logo-wrap">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 20 Q20 8 30 20 Q20 32 10 20Z" fill="currentColor" opacity="0.9"/>
+            <circle cx="20" cy="20" r="5" fill="currentColor"/>
+            <path d="M20 6 L20 10 M20 30 L20 34 M6 20 L10 20 M30 20 L34 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="header-center">
+        <span class="header-title">Sleep Disorder Screening</span>
+      </div>
+      <div class="header-right">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <span class="theme-icon" id="themeIcon">☀️</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- STEP PROGRESS BAR                               -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <nav class="step-progress" id="stepProgress">
+    <div class="step-progress-inner">
+      <div class="step-item active" data-step="0"><span class="step-num">1</span><span class="step-label">Consent</span></div>
+      <div class="step-connector" id="conn-0"></div>
+      <div class="step-item" data-step="1"><span class="step-num">2</span><span class="step-label">Personal</span></div>
+      <div class="step-connector" id="conn-1"></div>
+      <div class="step-item" data-step="2"><span class="step-num">3</span><span class="step-label">Basic</span></div>
+      <div class="step-connector" id="conn-2"></div>
+      <div class="step-item" data-step="3"><span class="step-num">4</span><span class="step-label">Sleepiness</span></div>
+      <div class="step-connector" id="conn-3"></div>
+      <div class="step-item" data-step="4"><span class="step-num">5</span><span class="step-label">Insomnia</span></div>
+      <div class="step-connector" id="conn-4"></div>
+      <div class="step-item" data-step="5"><span class="step-num">6</span><span class="step-label">Hypersomnia</span></div>
+      <div class="step-connector" id="conn-5"></div>
+      <div class="step-item" data-step="6"><span class="step-num">7</span><span class="step-label">Apnea</span></div>
+      <div class="step-connector" id="conn-6"></div>
+      <div class="step-item" data-step="7"><span class="step-num">8</span><span class="step-label">Circadian</span></div>
+      <div class="step-connector" id="conn-7"></div>
+      <div class="step-item" data-step="8"><span class="step-num">9</span><span class="step-label">Duration</span></div>
+      <div class="step-connector" id="conn-8"></div>
+      <div class="step-item" data-step="9"><span class="step-num">10</span><span class="step-label">Results</span></div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- MAIN CONTENT                                    -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <main class="app-main">
+
+    <!-- STEP 0 — CONSENT -->
+    <section class="step active" id="step-consent">
+      <div class="card card-hero">
+        <div class="hero-badge">
+          <div class="hero-logo-wrap">
             <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="20" cy="20" r="18" fill="rgba(255,255,255,0)"/>
-                <path d="M10 20 Q20 8 30 20 Q20 32 10 20Z" fill="currentColor" opacity="0.9"/>
-                <circle cx="20" cy="20" r="5" fill="currentColor"/>
-                <path d="M20 6 L20 10 M20 30 L20 34 M6 20 L10 20 M30 20 L34 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M10 20 Q20 8 30 20 Q20 32 10 20Z" fill="currentColor" opacity="0.9"/>
+              <circle cx="20" cy="20" r="5" fill="currentColor"/>
+              <path d="M20 6 L20 10 M20 30 L20 34 M6 20 L10 20 M30 20 L34 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
+          </div>
         </div>
-        <div class="header-center">
-            <span class="header-title">Sleep Disorder Screening</span>
+        <h1>Sleep Disorder Screening</h1>
+        <p class="subtitle">A clinical screening tool for common sleep disorders</p>
+        <div class="notice-box notice-info">
+          <div class="notice-icon">⚕️</div>
+          <div>
+            <h3>Important Notice</h3>
+            <p>This tool provides <strong>screening information only</strong>. It does <strong>not</strong> diagnose medical conditions, recommend treatments, or replace professional medical evaluation.</p>
+            <p>Your responses will be submitted securely to Sleep Laboratory Solutions for follow-up. All processing follows our privacy policy.</p>
+          </div>
         </div>
-        <div class="header-right">
-            <button class="theme-toggle no-print" id="themeToggle" onclick="toggleTheme()" style="display:none;">
-                <span id="themeIcon">🌙</span>
-            </button>
-        </div>
-    </div>
-</header>
+        <label class="consent-label" id="consentLabel">
+          <input type="checkbox" id="consentCheckbox" />
+          <span>I understand that this is a screening tool only and agree to proceed.</span>
+        </label>
+        <button class="btn btn-primary btn-lg" id="btnStartConsent" disabled>Start Screening</button>
+      </div>
+    </section>
 
-<main class="app-main">
-
-<!-- ════════════════════════════════════
-     FORM SECTION
-════════════════════════════════════ -->
-<div id="form-section">
-    <div class="page-title">
-        <h1>Let's Get Started</h1>
-        <p>Please complete all sections carefully. Your responses help us evaluate your sleep health.</p>
-    </div>
-
-    <!-- PROGRESS TRACKER -->
-    <div class="progress-tracker" id="progressTracker">
-        <div class="progress-dot active" data-card="0">1</div>
-        <div class="progress-dot" data-card="1">2</div>
-        <div class="progress-dot" data-card="2">3</div>
-        <div class="progress-dot" data-card="3">4</div>
-        <div class="progress-dot" data-card="4">5</div>
-        <div class="progress-dot" data-card="5">6</div>
-        <div class="progress-dot" data-card="6">7</div>
-        <div class="progress-dot" data-card="7">8</div>
-        <div class="progress-dot" data-card="8">9</div>
-        <div class="progress-dot" data-card="9">10</div>
-    </div>
-
-    <!-- BASIC INFORMATION -->
-    <div class="card" data-progress="0">
-        <h2>Basic Information</h2>
-
+    <!-- STEP 1 — PERSONAL INFO -->
+    <section class="step" id="step-personal">
+      <div class="card">
+        <h2>Personal Information</h2>
+        <p class="subtitle" style="margin-bottom:20px;">We'll use this to send your screening results directly to you.</p>
         <div class="form-group">
-            <label>1. Full Name</label>
-            <input type="text" id="q-name" placeholder="Enter your full name" />
+          <label for="q_name">Full Name</label>
+          <input type="text" id="q_name" class="input" placeholder="Your full name" />
         </div>
-
-        <div class="inline-fields">
-            <div class="form-group">
-                <label>Contact Number</label>
-                <input type="tel" id="q-phone" placeholder="+91 XXXXX XXXXX" />
-            </div>
-            <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" id="q-email" placeholder="you@example.com" />
-            </div>
-        </div>
-
-        <div class="inline-fields">
-            <div class="form-group">
-                <label>2. Age</label>
-                <input type="number" id="q-age" placeholder="Years" min="1" max="120" />
-            </div>
-            <div class="form-group">
-                <label>4. Height (cm)</label>
-                <input type="number" id="q-height" placeholder="cm" />
-            </div>
-            <div class="form-group">
-                <label>5. Weight (kg)</label>
-                <input type="number" id="q-weight" placeholder="kg" />
-            </div>
-        </div>
-
         <div class="form-group">
-            <label>3. Gender</label>
-            <div class="radio-group">
-                <label><input type="radio" name="gender" value="Male" onchange="toggleGenderSub()" /> Male</label>
-                <label><input type="radio" name="gender" value="Female" onchange="toggleGenderSub()" /> Female</label>
-            </div>
-            <div class="conditional hidden" id="menstrual-block">
-                <label style="margin-top:8px; font-weight:600; color:var(--text-label); font-size:0.9rem; display:block; margin-bottom:6px;">Menstrual Status</label>
-                <div class="radio-group">
-                    <label><input type="radio" name="menstrual" value="Regular" /> Regular</label>
-                    <label><input type="radio" name="menstrual" value="Perimenopause" /> Perimenopause</label>
-                    <label><input type="radio" name="menstrual" value="Post-menopause" /> Post-menopause</label>
-                </div>
-            </div>
+          <label for="q_phone">Phone Number</label>
+          <input type="tel" id="q_phone" class="input" placeholder="e.g. +91 9876543210" />
         </div>
-
         <div class="form-group">
-            <label>6. Neck Circumference (cm) <span class="hint">— leave blank if unknown; average will be used</span></label>
-            <input type="number" id="q-neck" placeholder="cm (optional)" />
+          <label for="q_email">Email Address</label>
+          <input type="email" id="q_email" class="input" placeholder="you@example.com" />
         </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" data-prev="step-consent">Back</button>
+          <button class="btn btn-primary" data-next="step-basic">Next</button>
+        </div>
+      </div>
+    </section>
 
-        <!-- ── MEDICAL CONDITIONS — 2-COLUMN GRID ── -->
+    <!-- STEP 2 — BASIC QUESTIONS -->
+    <section class="step" id="step-basic">
+      <div class="card">
+        <h2>Basic Questions</h2>
         <div class="form-group">
-            <label>7. Known Medical Conditions <span class="hint">(tick all that apply)</span></label>
-            <div class="checkbox-grid">
-                <label class="checkbox-option"><input type="checkbox" id="med-diabetes"     /><span>Diabetes</span></label>
-                <label class="checkbox-option"><input type="checkbox" id="med-hypertension" /><span>Hypertension</span></label>
-                <label class="checkbox-option"><input type="checkbox" id="med-thyroid"      /><span>Thyroid Disorder</span></label>
-                <label class="checkbox-option"><input type="checkbox" id="med-pcos"         /><span>PCOS</span></label>
-                <label class="checkbox-option"><input type="checkbox" id="med-cardiac"      /><span>Cardiac Disease</span></label>
-                <label class="checkbox-option"><input type="checkbox" id="med-stroke"       /><span>Stroke History</span></label>
-                <label class="checkbox-option"><input type="checkbox" id="med-anxiety"      /><span>Anxiety</span></label>
-                <label class="checkbox-option"><input type="checkbox" id="med-depression"   /><span>Depression</span></label>
-                <label class="checkbox-option"><input type="checkbox" id="med-stress"       /><span>Stress</span></label>
-            </div>
+          <label for="q_age">1. Age</label>
+          <input type="number" id="q_age" class="input" min="1" max="120" placeholder="e.g. 35" />
         </div>
-
         <div class="form-group">
-            <label>8. Current Consumption <span class="hint">(tick all that apply)</span></label>
-            <div class="check-group">
-                <label><input type="checkbox" id="con-meds"     /> Medications</label>
-                <label><input type="checkbox" id="con-caffeine" /> Caffeine (tea / coffee / energy drinks)</label>
-                <label><input type="checkbox" id="con-alcohol"  /> Alcohol</label>
-                <label><input type="checkbox" id="con-smoking"  /> Smoking / Nicotine</label>
-            </div>
+          <label>2. Gender</label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="q_gender" value="Male" /> Male</label>
+            <label class="radio-option"><input type="radio" name="q_gender" value="Female" /> Female</label>
+          </div>
         </div>
-
+        <div class="form-group conditional" id="menstrualGroup" style="display:none;">
+          <label>Menstrual status</label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="q_menstrual" value="Regular" /> Regular</label>
+            <label class="radio-option"><input type="radio" name="q_menstrual" value="Perimenopause" /> Perimenopause</label>
+            <label class="radio-option"><input type="radio" name="q_menstrual" value="Post-menopause" /> Post-menopause</label>
+          </div>
+        </div>
         <div class="form-group">
-            <label>9. Work Schedule</label>
-            <div class="radio-group">
-                <label><input type="radio" name="work" value="Day shift" /> Day shift</label>
-                <label><input type="radio" name="work" value="Night shift" /> Night shift</label>
-                <label><input type="radio" name="work" value="Rotating" /> Rotating</label>
-                <label><input type="radio" name="work" value="Not working" /> Not working</label>
-                <label><input type="radio" name="work" value="Retired" /> Retired</label>
-            </div>
+          <label for="q_height">3. Height (cm)</label>
+          <input type="number" id="q_height" class="input" min="50" max="250" placeholder="e.g. 170" />
         </div>
-
-        <!-- ── SLEEP SCHEDULE WITH AM/PM TIME PICKERS ── -->
         <div class="form-group">
-            <label>10. Usual Sleep Schedule</label>
-            <div class="radio-group">
-                <label><input type="radio" name="sleep-sched" value="Fixed"     onchange="toggleSleepSched()" /> Fixed</label>
-                <label><input type="radio" name="sleep-sched" value="Irregular" onchange="toggleSleepSched()" /> Irregular / Varies daily</label>
-            </div>
-
-            <!-- FIXED: structured AM/PM time pickers -->
-            <div id="fixed-block" style="display:none; margin-top:10px;" class="conditional">
-                <div class="time-row-wrap">
-                    <div class="time-box">
-                        <span class="time-box-label">Sleep Start Time (Bedtime)</span>
-                        <div class="time-selects">
-                            <select id="sl-h" onchange="calcDur()">
-                                <option value="">HH</option>
-                                <option>01</option><option>02</option><option>03</option><option>04</option>
-                                <option>05</option><option>06</option><option>07</option><option>08</option>
-                                <option>09</option><option>10</option><option>11</option><option>12</option>
-                            </select>
-                            <span class="colon">:</span>
-                            <select id="sl-m" onchange="calcDur()">
-                                <option value="">MM</option>
-                                <option>00</option><option>05</option><option>10</option><option>15</option>
-                                <option>20</option><option>25</option><option>30</option><option>35</option>
-                                <option>40</option><option>45</option><option>50</option><option>55</option>
-                            </select>
-                            <select id="sl-ap" class="ampm-sel" onchange="calcDur()">
-                                <option value="">AM/PM</option>
-                                <option>AM</option><option>PM</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="time-box">
-                        <span class="time-box-label">Wake Up Time</span>
-                        <div class="time-selects">
-                            <select id="wu-h" onchange="calcDur()">
-                                <option value="">HH</option>
-                                <option>01</option><option>02</option><option>03</option><option>04</option>
-                                <option>05</option><option>06</option><option>07</option><option>08</option>
-                                <option>09</option><option>10</option><option>11</option><option>12</option>
-                            </select>
-                            <span class="colon">:</span>
-                            <select id="wu-m" onchange="calcDur()">
-                                <option value="">MM</option>
-                                <option>00</option><option>05</option><option>10</option><option>15</option>
-                                <option>20</option><option>25</option><option>30</option><option>35</option>
-                                <option>40</option><option>45</option><option>50</option><option>55</option>
-                            </select>
-                            <select id="wu-ap" class="ampm-sel" onchange="calcDur()">
-                                <option value="">AM/PM</option>
-                                <option>AM</option><option>PM</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div id="dur-hint" class="duration-hint"></div>
-            </div>
-
-            <!-- IRREGULAR: duration input -->
-            <div id="irreg-block" style="display:none; margin-top:10px;" class="conditional">
-                <label style="font-size:0.85rem; font-weight:600; color:var(--text-label); display:block; margin-bottom:8px;">On average, how many hours do you sleep?</label>
-                <div class="dur-row">
-                    <input type="number" id="irreg-hrs" placeholder="Hours" min="0" max="24" />
-                    <span>hours per night (approximate)</span>
-                </div>
-            </div>
+          <label for="q_weight">4. Weight (kg)</label>
+          <input type="number" id="q_weight" class="input" min="10" max="300" placeholder="e.g. 75" />
         </div>
-
         <div class="form-group">
-            <label>11. How satisfied are you with your current sleep?</label>
-            <div class="radio-group">
-                <label><input type="radio" name="sleep-sat" value="Very satisfied" /> Very satisfied</label>
-                <label><input type="radio" name="sleep-sat" value="Satisfied" /> Satisfied</label>
-                <label><input type="radio" name="sleep-sat" value="Somewhat satisfied" /> Somewhat satisfied</label>
-                <label><input type="radio" name="sleep-sat" value="Dissatisfied" /> Dissatisfied</label>
-                <label><input type="radio" name="sleep-sat" value="Very dissatisfied" /> Very dissatisfied</label>
-            </div>
+          <label for="q_neck">5. Neck circumference (cm) <span class="hint">(leave blank if unknown — will be estimated using BMI)</span></label>
+          <input type="number" id="q_neck" class="input" min="20" max="70" placeholder="e.g. 38" />
         </div>
-
         <div class="form-group">
-            <label>12. How satisfied are you with your daytime functioning (work, concentration, mood, or performance)?</label>
-            <div class="radio-group">
-                <label><input type="radio" name="day-sat" value="Very satisfied" /> Very satisfied</label>
-                <label><input type="radio" name="day-sat" value="Satisfied" /> Satisfied</label>
-                <label><input type="radio" name="day-sat" value="Somewhat satisfied" /> Somewhat satisfied</label>
-                <label><input type="radio" name="day-sat" value="Dissatisfied" /> Dissatisfied</label>
-                <label><input type="radio" name="day-sat" value="Very dissatisfied" /> Very dissatisfied</label>
-            </div>
+          <label>6. Known medical conditions <span class="hint">(tick all that apply)</span></label>
+          <div class="checkbox-grid">
+            <label class="checkbox-option"><input type="checkbox" name="q_medical" value="Diabetes" /> Diabetes</label>
+            <label class="checkbox-option"><input type="checkbox" name="q_medical" value="Hypertension" /> Hypertension</label>
+            <label class="checkbox-option"><input type="checkbox" name="q_medical" value="Thyroid disorder" /> Thyroid disorder</label>
+            <label class="checkbox-option"><input type="checkbox" name="q_medical" value="PCOS" /> PCOS</label>
+            <label class="checkbox-option"><input type="checkbox" name="q_medical" value="Cardiac disease" /> Cardiac disease</label>
+            <label class="checkbox-option"><input type="checkbox" name="q_medical" value="Anxiety" /> Anxiety</label>
+            <label class="checkbox-option"><input type="checkbox" name="q_medical" value="Depression" /> Depression</label>
+            <label class="checkbox-option"><input type="checkbox" name="q_medical" value="Stress" /> Stress</label>
+            <label class="checkbox-option"><input type="checkbox" name="q_medical" value="History of stroke" /> History of stroke</label>
+          </div>
         </div>
-
         <div class="form-group">
-            <label>13. Do you feel tired, fatigued, or sleepy during the daytime?</label>
-            <div class="radio-group">
-                <label><input type="radio" name="daytime-tired" value="Yes" onchange="show('tired-freq-block', this.value==='Yes')" /> Yes</label>
-                <label><input type="radio" name="daytime-tired" value="No"  onchange="show('tired-freq-block', false)" /> No</label>
-            </div>
-            <div class="conditional hidden" id="tired-freq-block">
-                <label style="margin-top:8px; font-weight:600; color:var(--text-label); font-size:0.9rem; display:block; margin-bottom:6px;">How often?</label>
-                <div class="radio-group">
-                    <label><input type="radio" name="tired-freq" value="Rarely (≤1 day/week)" /> Rarely (≤1 day/week)</label>
-                    <label><input type="radio" name="tired-freq" value="Sometimes (2–3 days/week)" /> Sometimes (2–3 days/week)</label>
-                    <label><input type="radio" name="tired-freq" value="Often (4–5 days/week)" /> Often (4–5 days/week)</label>
-                    <label><input type="radio" name="tired-freq" value="Almost daily" /> Almost daily</label>
-                </div>
-            </div>
+          <label>7. Current consumption <span class="hint">(tick all that apply)</span></label>
+          <div class="checkbox-grid">
+            <label class="checkbox-option"><input type="checkbox" name="q_consumption" value="Medications" /> Medications</label>
+            <label class="checkbox-option"><input type="checkbox" name="q_consumption" value="Caffeine" /> Caffeine (tea/coffee/energy drinks)</label>
+            <label class="checkbox-option"><input type="checkbox" name="q_consumption" value="Alcohol" /> Alcohol</label>
+            <label class="checkbox-option"><input type="checkbox" name="q_consumption" value="Smoking" /> Smoking/Nicotine</label>
+          </div>
         </div>
-    </div>
+        <div class="form-group">
+          <label>8. Your work schedule</label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="q_work" value="Day shift" /> Day shift</label>
+            <label class="radio-option"><input type="radio" name="q_work" value="Night shift" /> Night shift</label>
+            <label class="radio-option"><input type="radio" name="q_work" value="Rotating" /> Rotating</label>
+            <label class="radio-option"><input type="radio" name="q_work" value="Not working" /> Not working</label>
+            <label class="radio-option"><input type="radio" name="q_work" value="Retired" /> Retired</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>9. What is your usual sleep schedule?</label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="q_schedule" value="Fixed" /> Fixed</label>
+            <label class="radio-option"><input type="radio" name="q_schedule" value="Irregular" /> Irregular / varies daily</label>
+          </div>
+        </div>
+        <div class="form-group conditional" id="fixedScheduleGroup" style="display:none;">
+          <div class="inline-fields">
+            <div>
+              <label for="q_sleep_start">Sleep start time</label>
+              <input type="time" id="q_sleep_start" class="input" />
+            </div>
+            <div>
+              <label for="q_wake_time">Wake time</label>
+              <input type="time" id="q_wake_time" class="input" />
+            </div>
+          </div>
+        </div>
+        <div class="form-group conditional" id="irregularScheduleGroup" style="display:none;">
+          <label for="q_avg_sleep">Average sleep hours</label>
+          <input type="number" id="q_avg_sleep" class="input" min="0" max="24" step="0.5" placeholder="e.g. 6.5" />
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" data-prev="step-personal">Back</button>
+          <button class="btn btn-primary" data-next="step-satisfaction">Next</button>
+        </div>
+      </div>
+    </section>
 
-    <!-- SLEEP DIFFICULTIES -->
-    <div class="card" data-progress="1">
+    <!-- STEP 3 — SATISFACTION & DAYTIME SLEEPINESS -->
+    <section class="step" id="step-satisfaction">
+      <div class="card">
+        <h2>Sleep Satisfaction &amp; Daytime Functioning</h2>
+        <div class="form-group">
+          <label>10. How satisfied are you with your current sleep?</label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="q_sleep_satisfaction" value="Very satisfied" /> Very satisfied</label>
+            <label class="radio-option"><input type="radio" name="q_sleep_satisfaction" value="Satisfied" /> Satisfied</label>
+            <label class="radio-option"><input type="radio" name="q_sleep_satisfaction" value="Somewhat" /> Somewhat</label>
+            <label class="radio-option"><input type="radio" name="q_sleep_satisfaction" value="Dissatisfied" /> Dissatisfied</label>
+            <label class="radio-option"><input type="radio" name="q_sleep_satisfaction" value="Very dissatisfied" /> Very dissatisfied</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>11. How satisfied are you with your daytime functioning (work, concentration, mood, or performance)?</label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="q_daytime_satisfaction" value="Very satisfied" /> Very satisfied</label>
+            <label class="radio-option"><input type="radio" name="q_daytime_satisfaction" value="Satisfied" /> Satisfied</label>
+            <label class="radio-option"><input type="radio" name="q_daytime_satisfaction" value="Somewhat" /> Somewhat</label>
+            <label class="radio-option"><input type="radio" name="q_daytime_satisfaction" value="Dissatisfied" /> Dissatisfied</label>
+            <label class="radio-option"><input type="radio" name="q_daytime_satisfaction" value="Very dissatisfied" /> Very dissatisfied</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>12. Do you feel tired, fatigued, or sleepy during the daytime?</label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="q_daytime_sleepy" value="Yes" /> Yes</label>
+            <label class="radio-option"><input type="radio" name="q_daytime_sleepy" value="No" /> No</label>
+          </div>
+        </div>
+        <div class="form-group conditional" id="daytimeSleepyGroup" style="display:none;">
+          <label>How often?</label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="q_sleepy_freq" value="Rarely" /> Rarely (≤1 day/week)</label>
+            <label class="radio-option"><input type="radio" name="q_sleepy_freq" value="Sometimes" /> Sometimes (2–3 days/week)</label>
+            <label class="radio-option"><input type="radio" name="q_sleepy_freq" value="Often" /> Often (4–5 days/week)</label>
+            <label class="radio-option"><input type="radio" name="q_sleepy_freq" value="Almost daily" /> Almost daily</label>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" data-prev="step-basic">Back</button>
+          <button class="btn btn-primary" data-next="step-insomnia">Next</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 4 — INSOMNIA -->
+    <section class="step" id="step-insomnia">
+      <div class="card">
         <h2>Sleep Difficulties</h2>
-
         <div class="form-group">
-            <label>1. Do you have difficulty falling asleep?</label>
-            <div class="radio-group">
-                <label><input type="radio" name="diff-sleep" value="Yes" onchange="show('diff-sleep-block', true)" /> Yes</label>
-                <label><input type="radio" name="diff-sleep" value="No"  onchange="show('diff-sleep-block', false)" /> No</label>
-            </div>
-            <div class="conditional hidden" id="diff-sleep-block">
-                <label style="margin-top:8px; font-weight:600; color:var(--text-label); font-size:0.9rem; display:block; margin-bottom:6px;">How long does it take you to fall asleep?</label>
-                <div class="radio-group">
-                    <label><input type="radio" name="sleep-onset" value="Less than 30 minutes" /> Less than 30 minutes</label>
-                    <label><input type="radio" name="sleep-onset" value="30–60 minutes" /> 30–60 minutes</label>
-                    <label><input type="radio" name="sleep-onset" value="More than an hour" /> More than an hour</label>
-                </div>
-                <div style="margin-top:14px;">
-                    <label style="font-weight:600; color:var(--text-label); font-size:0.9rem; display:block; margin-bottom:6px;">Do you wake up during the night or earlier than planned?</label>
-                    <div class="radio-group">
-                        <label><input type="radio" name="wakeup-night" value="Yes" /> Yes</label>
-                        <label><input type="radio" name="wakeup-night" value="No" /> No</label>
-                    </div>
-                </div>
-                <div style="margin-top:14px;">
-                    <label style="font-weight:600; color:var(--text-label); font-size:0.9rem; display:block; margin-bottom:6px;">If you wake up at night, do you have difficulty falling back asleep?</label>
-                    <div class="radio-group">
-                        <label><input type="radio" name="back-sleep" value="Yes" /> Yes</label>
-                        <label><input type="radio" name="back-sleep" value="No" /> No</label>
-                    </div>
-                </div>
-            </div>
+          <label>13. Do you have difficulty falling asleep at bedtime?</label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="q_insomnia_gate" value="Yes" /> Yes</label>
+            <label class="radio-option"><input type="radio" name="q_insomnia_gate" value="No" /> No</label>
+          </div>
         </div>
-
-        <div class="form-group">
-            <label>2. Do you feel excessively sleepy during the day despite adequate sleep time?</label>
+        <div id="insomniaSubQuestions" style="display:none;">
+          <div class="form-group">
+            <label>How long does it take you to fall asleep?</label>
             <div class="radio-group">
-                <label><input type="radio" name="excess-sleepy" value="Yes" /> Yes</label>
-                <label><input type="radio" name="excess-sleepy" value="No"  /> No</label>
+              <label class="radio-option"><input type="radio" name="q_sleep_latency" value="<30 mins" /> &lt;30 mins</label>
+              <label class="radio-option"><input type="radio" name="q_sleep_latency" value="30-60 mins" /> 30–60 mins</label>
+              <label class="radio-option"><input type="radio" name="q_sleep_latency" value=">1 hour" /> More than 1 hour</label>
             </div>
+          </div>
+          <div class="form-group">
+            <label>Do you wake up during the night or earlier than planned?</label>
+            <div class="radio-group">
+              <label class="radio-option"><input type="radio" name="q_night_waking" value="Yes" /> Yes</label>
+              <label class="radio-option"><input type="radio" name="q_night_waking" value="No" /> No</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>If you wake up at night, do you have difficulty falling back asleep?</label>
+            <div class="radio-group">
+              <label class="radio-option"><input type="radio" name="q_difficulty_back_sleep" value="Yes" /> Yes</label>
+              <label class="radio-option"><input type="radio" name="q_difficulty_back_sleep" value="No" /> No</label>
+            </div>
+          </div>
         </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" data-prev="step-satisfaction">Back</button>
+          <button class="btn btn-primary" data-next="step-hypersomnia">Next</button>
+        </div>
+      </div>
+    </section>
 
+    <!-- STEP 5 — HYPERSOMNIA -->
+    <section class="step" id="step-hypersomnia">
+      <div class="card">
+        <h2>Daytime Sleepiness</h2>
         <div class="form-group">
+          <label>14. Do you feel excessively sleepy during the day despite adequate sleep time?</label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="q_hypersomnia_gate" value="Yes" /> Yes</label>
+            <label class="radio-option"><input type="radio" name="q_hypersomnia_gate" value="No" /> No</label>
+          </div>
+        </div>
+        <div id="hypersomniaSubQuestions" style="display:none;">
+          <div class="form-group">
             <label>Do you have difficulty waking up?</label>
             <div class="radio-group">
-                <label><input type="radio" name="diff-wakeup" value="Yes" /> Yes</label>
-                <label><input type="radio" name="diff-wakeup" value="No"  /> No</label>
+              <label class="radio-option"><input type="radio" name="q_difficulty_waking" value="Yes" /> Yes</label>
+              <label class="radio-option"><input type="radio" name="q_difficulty_waking" value="No" /> No</label>
             </div>
-        </div>
-
-        <div class="form-group">
+          </div>
+          <div class="form-group">
             <label>How often do you usually nap during the day?</label>
             <div class="radio-group">
-                <label><input type="radio" name="nap-freq" value="I don't nap"       onchange="show('nap-block', false)" /> I don't take naps</label>
-                <label><input type="radio" name="nap-freq" value="1–2 times"         onchange="show('nap-block', true)" /> 1–2 times</label>
-                <label><input type="radio" name="nap-freq" value="3 or more times"   onchange="show('nap-block', true)" /> 3 or more times</label>
+              <label class="radio-option"><input type="radio" name="q_nap_freq" value="I don't" /> I don't</label>
+              <label class="radio-option"><input type="radio" name="q_nap_freq" value="1-2 times" /> 1–2 times</label>
+              <label class="radio-option"><input type="radio" name="q_nap_freq" value="3 or more" /> 3 or more times</label>
             </div>
-            <div id="nap-block" class="conditional hidden" style="margin-top:10px;">
-                <label style="font-weight:600; color:var(--text-label); font-size:0.9rem; display:block; margin-bottom:6px;">Longest nap duration</label>
-                <div class="radio-group">
-                    <label><input type="radio" name="nap-dur" value="Less than 30 minutes" /> Less than 30 minutes</label>
-                    <label><input type="radio" name="nap-dur" value="30–60 minutes" /> 30–60 minutes</label>
-                    <label><input type="radio" name="nap-dur" value="More than 1 hour" /> More than 1 hour</label>
-                </div>
-                <div style="margin-top:14px;">
-                    <label style="font-weight:600; color:var(--text-label); font-size:0.9rem; display:block; margin-bottom:6px;">Do you feel refreshed after naps?</label>
-                    <div class="radio-group">
-                        <label><input type="radio" name="nap-refresh" value="Yes" /> Yes</label>
-                        <label><input type="radio" name="nap-refresh" value="No"  /> No</label>
-                    </div>
-                </div>
+          </div>
+          <div id="napFollowUpQuestions" style="display:none;">
+            <div class="form-group">
+              <label>Longest nap duration</label>
+              <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="q_nap_duration" value="<30 minutes" /> &lt;30 minutes</label>
+                <label class="radio-option"><input type="radio" name="q_nap_duration" value="30-60 minutes" /> 30–60 minutes</label>
+                <label class="radio-option"><input type="radio" name="q_nap_duration" value=">1 hour" /> More than 1 hour</label>
+              </div>
             </div>
+            <div class="form-group">
+              <label>Do you feel refreshed after naps?</label>
+              <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="q_nap_refreshed" value="Yes" /> Yes</label>
+                <label class="radio-option"><input type="radio" name="q_nap_refreshed" value="No" /> No</label>
+              </div>
+            </div>
+          </div>
         </div>
-    </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" data-prev="step-insomnia">Back</button>
+          <button class="btn btn-primary" data-next="step-apnea">Next</button>
+        </div>
+      </div>
+    </section>
 
-    <!-- BREATHING DURING SLEEP -->
-    <div class="card" data-progress="2">
+    <!-- STEP 6 — SLEEP APNEA -->
+    <section class="step" id="step-apnea">
+      <div class="card">
         <h2>Breathing During Sleep</h2>
-
         <div class="form-group">
-            <label>3. Do you have a snoring problem / has someone told you about snoring?</label>
-            <div class="radio-group">
-                <label><input type="radio" name="snoring" value="Yes" /> Yes</label>
-                <label><input type="radio" name="snoring" value="No"  /> No</label>
-            </div>
+          <label>15. Do you have a snoring problem / has someone told you about snoring?</label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="q_snoring_gate" value="Yes" /> Yes</label>
+            <label class="radio-option"><input type="radio" name="q_snoring_gate" value="No" /> No</label>
+          </div>
         </div>
-        <div class="form-group">
+        <div id="apneaSubQuestions" style="display:none;">
+          <div class="form-group">
             <label>Has anyone observed you stop breathing, choke, or gasp during sleep?</label>
             <div class="radio-group">
-                <label><input type="radio" name="observed-apnea" value="Yes" /> Yes</label>
-                <label><input type="radio" name="observed-apnea" value="No"  /> No</label>
+              <label class="radio-option"><input type="radio" name="q_witnessed_apnea" value="Yes" /> Yes</label>
+              <label class="radio-option"><input type="radio" name="q_witnessed_apnea" value="No" /> No</label>
             </div>
-        </div>
-        <div class="form-group">
+          </div>
+          <div class="form-group">
             <label>Has your snoring ever been loud enough to be heard outside the room?</label>
             <div class="radio-group">
-                <label><input type="radio" name="loud-snoring" value="Yes" /> Yes</label>
-                <label><input type="radio" name="loud-snoring" value="No"  /> No</label>
+              <label class="radio-option"><input type="radio" name="q_loud_snoring" value="Yes" /> Yes</label>
+              <label class="radio-option"><input type="radio" name="q_loud_snoring" value="No" /> No</label>
             </div>
-        </div>
-        <div class="form-group">
+          </div>
+          <div class="form-group">
             <label>Do you wake up multiple times at night or more than 3 times?</label>
             <div class="radio-group">
-                <label><input type="radio" name="wakeup-multiple" value="Yes" /> Yes</label>
-                <label><input type="radio" name="wakeup-multiple" value="No"  /> No</label>
+              <label class="radio-option"><input type="radio" name="q_night_awakenings" value="Yes" /> Yes</label>
+              <label class="radio-option"><input type="radio" name="q_night_awakenings" value="No" /> No</label>
             </div>
-        </div>
-        <div class="form-group">
+          </div>
+          <div class="form-group">
             <label>Do you wake up with a headache?</label>
             <div class="radio-group">
-                <label><input type="radio" name="headache" value="Yes" /> Yes</label>
-                <label><input type="radio" name="headache" value="No"  /> No</label>
+              <label class="radio-option"><input type="radio" name="q_morning_headache" value="Yes" /> Yes</label>
+              <label class="radio-option"><input type="radio" name="q_morning_headache" value="No" /> No</label>
             </div>
-        </div>
-        <div class="form-group">
+          </div>
+          <div class="form-group">
             <label>Do you wake up with dry mouth?</label>
             <div class="radio-group">
-                <label><input type="radio" name="dry-mouth" value="Yes" /> Yes</label>
-                <label><input type="radio" name="dry-mouth" value="No"  /> No</label>
+              <label class="radio-option"><input type="radio" name="q_dry_mouth" value="Yes" /> Yes</label>
+              <label class="radio-option"><input type="radio" name="q_dry_mouth" value="No" /> No</label>
             </div>
+          </div>
         </div>
-    </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" data-prev="step-hypersomnia">Back</button>
+          <button class="btn btn-primary" data-next="step-circadian">Next</button>
+        </div>
+      </div>
+    </section>
 
-    <!-- SLEEP TIMING & RHYTHM -->
-    <div class="card" data-progress="3">
+    <!-- STEP 7 — CIRCADIAN DISORDER -->
+    <section class="step" id="step-circadian">
+      <div class="card">
         <h2>Sleep Timing &amp; Rhythm</h2>
-
         <div class="form-group">
-            <label>4. Do you struggle to fall asleep at conventional bedtime (10–11 PM)?</label>
-            <div class="radio-group">
-                <label><input type="radio" name="bedtime-struggle" value="Yes" /> Yes</label>
-                <label><input type="radio" name="bedtime-struggle" value="No"  /> No</label>
-            </div>
+          <label>16. Do you struggle to fall asleep at conventional bedtime (10–11 PM)?</label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="q_circadian_gate" value="Yes" /> Yes</label>
+            <label class="radio-option"><input type="radio" name="q_circadian_gate" value="No" /> No</label>
+          </div>
         </div>
-        <div class="form-group">
-            <label>Are you a —</label>
+        <div id="circadianSubQuestions" style="display:none;">
+          <div class="form-group">
+            <label>Are you an</label>
             <div class="radio-group">
-                <label><input type="radio" name="chronotype" value="Early riser" /> Early riser</label>
-                <label><input type="radio" name="chronotype" value="Person who sleeps late" /> Person who sleeps late</label>
-                <label><input type="radio" name="chronotype" value="Irregular sleeper" /> Irregular sleeper</label>
+              <label class="radio-option"><input type="radio" name="q_chronotype" value="early riser" /> Early riser</label>
+              <label class="radio-option"><input type="radio" name="q_chronotype" value="sleeps late" /> A person who sleeps late</label>
+              <label class="radio-option"><input type="radio" name="q_chronotype" value="irregular" /> Irregular sleeper</label>
             </div>
-        </div>
-        <div class="form-group">
+          </div>
+          <div class="form-group">
             <label>Do you feel zoned out / lost / brain fog after waking up?</label>
             <div class="radio-group">
-                <label><input type="radio" name="brain-fog" value="Yes" /> Yes</label>
-                <label><input type="radio" name="brain-fog" value="No"  /> No</label>
+              <label class="radio-option"><input type="radio" name="q_brain_fog" value="Yes" /> Yes</label>
+              <label class="radio-option"><input type="radio" name="q_brain_fog" value="No" /> No</label>
             </div>
-        </div>
-        <div class="form-group">
+          </div>
+          <div class="form-group">
             <label>During holidays/weekends does your sleep timing shift later or earlier compared to workdays?</label>
             <div class="radio-group">
-                <label><input type="radio" name="social-jetlag" value="Yes" /> Yes</label>
-                <label><input type="radio" name="social-jetlag" value="No"  /> No</label>
+              <label class="radio-option"><input type="radio" name="q_weekend_shift" value="Yes" /> Yes</label>
+              <label class="radio-option"><input type="radio" name="q_weekend_shift" value="No" /> No</label>
             </div>
+          </div>
         </div>
-        <div class="form-group" style="margin-top:20px;">
-            <label>5. How long have you been experiencing these signs?</label>
-            <div class="radio-group">
-                <label><input type="radio" name="duration" value="Less than 2 weeks" /> Less than 2 weeks</label>
-                <label><input type="radio" name="duration" value="2 weeks to 3 months" /> 2 weeks to 3 months</label>
-                <label><input type="radio" name="duration" value="3 months to 1 year" /> 3 months to 1 year</label>
-                <label><input type="radio" name="duration" value="More than 1 year" /> More than 1 year</label>
-            </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" data-prev="step-apnea">Back</button>
+          <button class="btn btn-primary" data-next="step-duration">Next</button>
         </div>
-    </div>
+      </div>
+    </section>
 
-    <button class="btn btn-primary btn-lg no-print" id="submit-btn" onclick="submitForm()">Generate Sleep Analysis Report</button>
-    <div class="error-msg" id="err-msg"></div>
-</div>
-
-<!-- ════════════════════════════════════
-     RESULTS SECTION
-════════════════════════════════════ -->
-<div id="results">
-    <div class="card">
-
-        <!-- Report header -->
-        <div style="text-align:center; margin-bottom:20px; padding-bottom:16px; border-bottom:2px solid var(--border);">
-            <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:10px;">
-                <div style="width:42px;height:42px;background:#1a237e;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:26px;height:26px;">
-                        <circle cx="20" cy="20" r="18" fill="#1a237e"/>
-                        <path d="M10 20 Q20 8 30 20 Q20 32 10 20Z" fill="#fff" opacity="0.9"/>
-                        <circle cx="20" cy="20" r="5" fill="#3949ab"/>
-                        <path d="M20 6 L20 10 M20 30 L20 34 M6 20 L10 20 M30 20 L34 20" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                </div>
-                <div style="text-align:left;">
-                    <div style="font-size:1rem;font-weight:800;color:var(--accent);">Sleep Laboratory Solutions</div>
-                    <div style="font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);">Education &amp; Diagnostics</div>
-                </div>
-            </div>
-            <div style="font-size:1.4rem;font-weight:700;color:var(--accent);">Sleep Analysis Report</div>
-            <div id="res-date" style="color:var(--text-muted);font-size:0.88rem;margin-top:4px;"></div>
+    <!-- STEP 8 — DURATION -->
+    <section class="step" id="step-duration">
+      <div class="card">
+        <h2>Duration</h2>
+        <div class="form-group">
+          <label>How long have you been experiencing these signs?</label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="q_duration" value="<2 weeks" /> Less than 2 weeks</label>
+            <label class="radio-option"><input type="radio" name="q_duration" value="2w-3m" /> 2 weeks to 3 months</label>
+            <label class="radio-option"><input type="radio" name="q_duration" value="3m-1y" /> 3 months to 1 year</label>
+            <label class="radio-option"><input type="radio" name="q_duration" value=">1 year" /> More than 1 year</label>
+          </div>
         </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" data-prev="step-circadian">Back</button>
+          <button class="btn btn-primary" id="btnSubmit">Submit &amp; View Results</button>
+        </div>
+      </div>
+    </section>
 
-        <!-- AWS status banner -->
+    <!-- STEP 9 — RESULTS -->
+    <section class="step" id="step-results">
+      <div class="card card-results">
+        <h2>🩺 Screening Results</h2>
         <div id="aws-banner" class="aws-banner no-print"></div>
 
-        <!-- Patient Details -->
-        <div class="result-section">
-            <h3>Patient Details</h3>
-            <div class="info-grid" id="res-patient"></div>
+        <div id="patientInfoSection" class="results-block">
+          <h3>Patient Details</h3>
+          <div id="patientInfoGrid" class="patient-info-grid"></div>
         </div>
 
-        <!-- Analysis & Results -->
-        <div class="result-section">
-            <h3>Analysis &amp; Results</h3>
-            <div id="res-analysis"></div>
+        <p class="results-intro" id="resultsIntro">
+          Your responses were analyzed for patterns associated with common sleep disorders. This screening does not provide a diagnosis.
+        </p>
+
+        <div id="primaryFindingSection" class="results-block" style="display:none;">
+          <h3>Primary Screening Finding</h3>
+          <div id="primaryFindingCard"></div>
         </div>
 
-        <!-- Questionnaire Summary -->
-        <div class="result-section">
-            <h3>Questionnaire Summary</h3>
-            <div id="res-summary"></div>
+        <div id="additionalFindingsSection" class="results-block" style="display:none;">
+          <h3>Additional Findings</h3>
+          <div id="resultsGrid" class="results-grid"></div>
         </div>
 
-        <!-- Insights & Recommendations -->
-        <div class="result-section">
-            <h3>Insights &amp; Recommendations</h3>
-            <div id="res-recs"></div>
+        <div id="comorbidSection" class="comorbid-section" style="display:none;">
+          <h3>⚠️ Possible Overlap / Comorbid Sleep Conditions</h3>
+          <ul id="comorbidList"></ul>
         </div>
 
-        <button class="print-btn no-print" id="pdf-btn" onclick="window.print()">Print / Save as PDF</button>
-        <button class="btn-outline no-print" onclick="resetForm()">Start New Assessment</button>
-    </div>
-</div>
+        <div class="notice-box notice-recommend">
+          <div class="notice-icon">📋</div>
+          <div>
+            <h3>Recommendation</h3>
+            <p>If any disorder shows <strong>Moderate</strong> or <strong>High</strong> risk, we recommend consulting a qualified sleep medicine specialist or healthcare professional for a comprehensive evaluation.</p>
+          </div>
+        </div>
 
-</main>
+        <div class="notice-box notice-disclaimer">
+          <div class="notice-icon">⚕️</div>
+          <div>
+            <h3>Medical Disclaimer</h3>
+            <p>This tool provides <strong>screening information only</strong>. It does <strong>not</strong> diagnose medical conditions. It does <strong>not</strong> recommend treatments. It does <strong>not</strong> replace professional medical evaluation. Users should consult qualified healthcare professionals for diagnosis and treatment.</p>
+          </div>
+        </div>
+
+        <div class="btn-row no-print">
+          <button class="btn btn-secondary" id="btnRestart">Start Over</button>
+          <button class="btn btn-primary" onclick="window.print()">Print / Save as PDF</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
 
 <script>
+/* ══════════════════════════════════════════════════════
+   CONSTANTS
+══════════════════════════════════════════════════════ */
 const AWS_API_URL = "https://y1taonalm3.execute-api.ap-south-1.amazonaws.com/submit";
 
-/* ── THEME TOGGLE ── */
-function toggleTheme() {
-    const body = document.body;
-    const isDark = body.getAttribute('data-theme') === 'dark';
-    body.setAttribute('data-theme', isDark ? 'light' : 'dark');
-    document.getElementById('themeIcon').textContent = isDark ? '🌙' : '☀️';
+const STEP_ORDER = [
+  'step-consent', 'step-personal', 'step-basic', 'step-satisfaction',
+  'step-insomnia', 'step-hypersomnia', 'step-apnea', 'step-circadian',
+  'step-duration', 'step-results'
+];
+
+/* ══════════════════════════════════════════════════════
+   THEME TOGGLE
+══════════════════════════════════════════════════════ */
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon   = document.getElementById('themeIcon');
+themeToggle.addEventListener('click', () => {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  themeIcon.textContent = isDark ? '🌙' : '☀️';
+});
+
+/* ══════════════════════════════════════════════════════
+   CONSENT CHECKBOX
+══════════════════════════════════════════════════════ */
+const consentCb  = document.getElementById('consentCheckbox');
+const btnStart   = document.getElementById('btnStartConsent');
+consentCb.addEventListener('change', () => { btnStart.disabled = !consentCb.checked; });
+btnStart.addEventListener('click', () => goToStep('step-personal'));
+
+/* ══════════════════════════════════════════════════════
+   STEP NAVIGATION
+══════════════════════════════════════════════════════ */
+function goToStep(targetId) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById(targetId).classList.add('active');
+  updateProgressBar(targetId);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-/* ── Show / hide utilities ── */
-function show(id, visible) {
-    document.getElementById(id).classList.toggle('hidden', !visible);
-}
-function toggleGenderSub() {
-    const v = document.querySelector('input[name="gender"]:checked')?.value;
-    show('menstrual-block', v === 'Female');
-}
-function toggleSleepSched() {
-    const v = document.querySelector('input[name="sleep-sched"]:checked')?.value;
-    document.getElementById('fixed-block').style.display  = v === 'Fixed'     ? 'block' : 'none';
-    document.getElementById('irreg-block').style.display  = v === 'Irregular' ? 'block' : 'none';
-    document.getElementById('dur-hint').style.display = 'none';
+function updateProgressBar(activeStepId) {
+  const idx = STEP_ORDER.indexOf(activeStepId);
+  document.querySelectorAll('.step-item').forEach((item, i) => {
+    item.classList.remove('active', 'completed');
+    if (i === idx) item.classList.add('active');
+    else if (i < idx) item.classList.add('completed');
+  });
+  document.querySelectorAll('.step-connector').forEach((conn, i) => {
+    conn.classList.toggle('done', i < idx);
+  });
 }
 
-/* ── Time picker helpers ── */
-function getT(hId, mId, apId) {
-    const h = document.getElementById(hId).value;
-    const m = document.getElementById(mId).value;
-    const ap = document.getElementById(apId).value;
-    return (h && m && ap) ? { h: +h, m: +m, ap } : null;
-}
-function toMins(h, m, ap) {
-    let h24 = h;
-    if (ap === 'AM' && h === 12) h24 = 0;
-    if (ap === 'PM' && h !== 12) h24 = h + 12;
-    return h24 * 60 + m;
-}
-function fmt12(h, m, ap) { return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ' ' + ap; }
-function fmt24(h, m, ap) {
-    const total = toMins(h, m, ap);
-    return String(Math.floor(total/60)).padStart(2,'0') + ':' + String(total%60).padStart(2,'0');
-}
-function calcDur() {
-    const s = getT('sl-h','sl-m','sl-ap');
-    const w = getT('wu-h','wu-m','wu-ap');
-    const hint = document.getElementById('dur-hint');
-    if (s && w) {
-        let sm = toMins(s.h,s.m,s.ap), wm = toMins(w.h,w.m,w.ap);
-        if (wm <= sm) wm += 1440;
-        const d = wm - sm;
-        hint.textContent = '⏱ Calculated sleep duration: ' + Math.floor(d/60) + 'h ' + (d%60) + 'min';
-        hint.style.display = 'block';
-    } else { hint.style.display = 'none'; }
+// Wire up all data-next / data-prev buttons
+document.querySelectorAll('[data-next]').forEach(btn => {
+  btn.addEventListener('click', () => goToStep(btn.dataset.next));
+});
+document.querySelectorAll('[data-prev]').forEach(btn => {
+  btn.addEventListener('click', () => goToStep(btn.dataset.prev));
+});
+
+/* ══════════════════════════════════════════════════════
+   CONDITIONAL QUESTIONS
+══════════════════════════════════════════════════════ */
+// Gender → menstrual
+document.querySelectorAll('input[name="q_gender"]').forEach(r => {
+  r.addEventListener('change', () => {
+    document.getElementById('menstrualGroup').style.display =
+      r.value === 'Female' ? 'block' : 'none';
+  });
+});
+
+// Sleep schedule
+document.querySelectorAll('input[name="q_schedule"]').forEach(r => {
+  r.addEventListener('change', () => {
+    document.getElementById('fixedScheduleGroup').style.display =
+      r.value === 'Fixed' ? 'block' : 'none';
+    document.getElementById('irregularScheduleGroup').style.display =
+      r.value === 'Irregular' ? 'block' : 'none';
+  });
+});
+
+// Daytime sleepiness
+document.querySelectorAll('input[name="q_daytime_sleepy"]').forEach(r => {
+  r.addEventListener('change', () => {
+    document.getElementById('daytimeSleepyGroup').style.display =
+      r.value === 'Yes' ? 'block' : 'none';
+  });
+});
+
+// Insomnia gate
+document.querySelectorAll('input[name="q_insomnia_gate"]').forEach(r => {
+  r.addEventListener('change', () => {
+    document.getElementById('insomniaSubQuestions').style.display =
+      r.value === 'Yes' ? 'block' : 'none';
+  });
+});
+
+// Hypersomnia gate
+document.querySelectorAll('input[name="q_hypersomnia_gate"]').forEach(r => {
+  r.addEventListener('change', () => {
+    document.getElementById('hypersomniaSubQuestions').style.display =
+      r.value === 'Yes' ? 'block' : 'none';
+  });
+});
+
+// Nap follow-up
+document.querySelectorAll('input[name="q_nap_freq"]').forEach(r => {
+  r.addEventListener('change', () => {
+    document.getElementById('napFollowUpQuestions').style.display =
+      (r.value === '1-2 times' || r.value === '3 or more') ? 'block' : 'none';
+  });
+});
+
+// Apnea gate
+document.querySelectorAll('input[name="q_snoring_gate"]').forEach(r => {
+  r.addEventListener('change', () => {
+    document.getElementById('apneaSubQuestions').style.display =
+      r.value === 'Yes' ? 'block' : 'none';
+  });
+});
+
+// Circadian gate
+document.querySelectorAll('input[name="q_circadian_gate"]').forEach(r => {
+  r.addEventListener('change', () => {
+    document.getElementById('circadianSubQuestions').style.display =
+      r.value === 'Yes' ? 'block' : 'none';
+  });
+});
+
+// Selected state visual highlight for radio/checkbox
+document.addEventListener('change', e => {
+  if (e.target.type === 'radio') {
+    document.querySelectorAll(`input[name="${e.target.name}"]`).forEach(r => {
+      r.closest('.radio-option')?.classList.toggle('selected', r.checked);
+    });
+  }
+  if (e.target.type === 'checkbox') {
+    e.target.closest('.checkbox-option')?.classList.toggle('selected', e.target.checked);
+  }
+});
+
+/* ══════════════════════════════════════════════════════
+   VALUE READERS
+══════════════════════════════════════════════════════ */
+function rv(name) { return document.querySelector(`input[name="${name}"]:checked`)?.value || '—'; }
+function ckName(name, val) { return !!document.querySelector(`input[name="${name}"][value="${val}"]:checked`); }
+function getCheckedValues(name) {
+  return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(c => c.value);
 }
 
-/* ── Value readers ── */
-function rv(name) { return document.querySelector('input[name="'+name+'"]:checked')?.value || '—'; }
-function ck(id)   { return !!document.getElementById(id)?.checked; }
-
+/* ══════════════════════════════════════════════════════
+   SLEEP DURATION TEXT
+══════════════════════════════════════════════════════ */
 function durText() {
-    const sc = rv('sleep-sched');
-    if (sc === 'Fixed') {
-        const s = getT('sl-h','sl-m','sl-ap'), w = getT('wu-h','wu-m','wu-ap');
-        if (s && w) {
-            let sm = toMins(s.h,s.m,s.ap), wm = toMins(w.h,w.m,w.ap);
-            if (wm <= sm) wm += 1440;
-            const d = wm - sm;
-            return 'Bedtime ' + fmt12(s.h,s.m,s.ap) + ' – Wake ' + fmt12(w.h,w.m,w.ap) +
-                   ' (' + Math.floor(d/60) + 'h ' + (d%60) + 'min)';
-        }
+  const sched = rv('q_schedule');
+  if (sched === 'Fixed') {
+    const start = document.getElementById('q_sleep_start').value;
+    const wake  = document.getElementById('q_wake_time').value;
+    if (start && wake) {
+      const [sh, sm] = start.split(':').map(Number);
+      const [wh, wm] = wake.split(':').map(Number);
+      let startMins = sh * 60 + sm;
+      let wakeMins  = wh * 60 + wm;
+      if (wakeMins <= startMins) wakeMins += 1440;
+      const d = wakeMins - startMins;
+      return `${start} – ${wake} (${Math.floor(d/60)}h ${d%60}min)`;
     }
-    if (sc === 'Irregular') {
-        const h = parseInt(document.getElementById('irreg-hrs').value) || 0;
-        if (h) return '~' + h + ' hours';
-    }
-    return '—';
+  }
+  if (sched === 'Irregular') {
+    const h = parseFloat(document.getElementById('q_avg_sleep').value);
+    if (h) return `~${h} hours`;
+  }
+  return '—';
 }
 
-/* ── Scoring ── */
+/* ══════════════════════════════════════════════════════
+   SCORING
+══════════════════════════════════════════════════════ */
 function calcScores() {
-    return {
-        insomnia: [
-            rv('diff-sleep') === 'Yes',
-            rv('wakeup-night') === 'Yes',
-            rv('back-sleep') === 'Yes',
-            ['Dissatisfied','Very dissatisfied'].includes(rv('sleep-sat')),
-            ck('med-anxiety') || ck('med-depression') || ck('med-stress')
-        ].filter(Boolean).length,
-        insomniaMax: 5,
+  const medList = getCheckedValues('q_medical');
+  const hasAnxiety    = medList.includes('Anxiety');
+  const hasDepression = medList.includes('Depression');
+  const hasStress     = medList.includes('Stress');
+  const hasHypert     = medList.includes('Hypertension');
+  const hasCardiac    = medList.includes('Cardiac disease');
 
-        hypersomnia: [
-            rv('excess-sleepy') === 'Yes',
-            rv('diff-wakeup') === 'Yes',
-            rv('daytime-tired') === 'Yes',
-            rv('nap-freq') === '3 or more times'
-        ].filter(Boolean).length,
-        hypersomMax: 4,
+  const insomnia = [
+    rv('q_insomnia_gate') === 'Yes',
+    rv('q_night_waking') === 'Yes',
+    rv('q_difficulty_back_sleep') === 'Yes',
+    ['Dissatisfied','Very dissatisfied'].includes(rv('q_sleep_satisfaction')),
+    hasAnxiety || hasDepression || hasStress
+  ].filter(Boolean).length;
 
-        apnea: [
-            rv('snoring') === 'Yes',
-            rv('observed-apnea') === 'Yes',
-            rv('loud-snoring') === 'Yes',
-            rv('wakeup-multiple') === 'Yes',
-            rv('headache') === 'Yes',
-            ck('med-hypertension'),
-            ck('med-cardiac')
-        ].filter(Boolean).length,
-        apneaMax: 7,
+  const hypersomnia = [
+    rv('q_hypersomnia_gate') === 'Yes',
+    rv('q_difficulty_waking') === 'Yes',
+    rv('q_daytime_sleepy') === 'Yes',
+    rv('q_nap_freq') === '3 or more'
+  ].filter(Boolean).length;
 
-        circadian: [
-            rv('bedtime-struggle') === 'Yes',
-            rv('chronotype') === 'Irregular sleeper',
-            rv('social-jetlag') === 'Yes',
-            rv('brain-fog') === 'Yes'
-        ].filter(Boolean).length,
-        circadianMax: 4
-    };
+  const apnea = [
+    rv('q_snoring_gate') === 'Yes',
+    rv('q_witnessed_apnea') === 'Yes',
+    rv('q_loud_snoring') === 'Yes',
+    rv('q_night_awakenings') === 'Yes',
+    rv('q_morning_headache') === 'Yes',
+    hasHypert,
+    hasCardiac
+  ].filter(Boolean).length;
+
+  const circadian = [
+    rv('q_circadian_gate') === 'Yes',
+    rv('q_chronotype') === 'irregular',
+    rv('q_weekend_shift') === 'Yes',
+    rv('q_brain_fog') === 'Yes'
+  ].filter(Boolean).length;
+
+  return {
+    insomnia,    insomniaMax: 5,
+    hypersomnia, hypersomMax: 4,
+    apnea,       apneaMax: 7,
+    circadian,   circadianMax: 4
+  };
 }
 
-function pct(s, max) { return Math.round(s / max * 100); }
-function lvl(s, max) { const p = s/max; return p>=0.6?'high':p>=0.35?'medium':'low'; }
-function lvlTxt(l)   { return {high:'High Likelihood', medium:'Moderate Likelihood', low:'Low Likelihood'}[l]; }
-function tierClass(l){ return {high:'tier-high', medium:'tier-moderate', low:'tier-low'}[l]; }
+function pct(s, max) { return max ? Math.round(s / max * 100) : 0; }
+function tier(s, max) {
+  const p = pct(s, max);
+  if (p >= 60) return 'high';
+  if (p >= 35) return 'moderate';
+  return 'low';
+}
+function tierLabel(t) { return { high: 'High Risk', moderate: 'Moderate Risk', low: 'Low Risk' }[t]; }
 
-function topRisk(sc) {
-    return [
-        { name:'Sleep Apnea',              key:'apnea',       s:sc.apnea,       max:sc.apneaMax,    desc:'Breathing disruptions during sleep leading to fragmented rest and oxygen drops.' },
-        { name:'Insomnia',                  key:'insomnia',    s:sc.insomnia,    max:sc.insomniaMax, desc:'Difficulty initiating or maintaining sleep, causing daytime impairment.' },
-        { name:'Hypersomnia',               key:'hypersomnia', s:sc.hypersomnia, max:sc.hypersomMax, desc:'Excessive daytime sleepiness despite adequate or prolonged night sleep.' },
-        { name:'Circadian Rhythm Disorder', key:'circadian',   s:sc.circadian,   max:sc.circadianMax,desc:'Disruption of the internal body clock affecting sleep-wake timing.' }
-    ].sort((a,b) => pct(b.s,b.max) - pct(a.s,a.max))[0];
+const DISORDERS = [
+  {
+    key: 'apnea',
+    name: 'Sleep Apnea',
+    icon: '😴',
+    desc: 'Breathing disruptions during sleep leading to fragmented rest and oxygen drops.',
+    rec: 'A formal sleep study (polysomnography) is strongly recommended. Avoid sleeping on your back and limit alcohol in the evening.',
+    scoreKey: 'apnea', maxKey: 'apneaMax'
+  },
+  {
+    key: 'insomnia',
+    name: 'Insomnia',
+    icon: '🌙',
+    desc: 'Difficulty initiating or maintaining sleep, causing daytime impairment.',
+    rec: 'Practice consistent sleep and wake times daily. Avoid screens 60 minutes before bed.',
+    scoreKey: 'insomnia', maxKey: 'insomniaMax'
+  },
+  {
+    key: 'hypersomnia',
+    name: 'Hypersomnia',
+    icon: '💤',
+    desc: 'Excessive daytime sleepiness despite adequate or prolonged night sleep.',
+    rec: 'Limit naps to under 20 minutes before 3 PM. Consult a sleep specialist if symptoms persist.',
+    scoreKey: 'hypersomnia', maxKey: 'hypersomMax'
+  },
+  {
+    key: 'circadian',
+    name: 'Circadian Rhythm Disorder',
+    icon: '🕐',
+    desc: 'Disruption of the internal body clock affecting sleep-wake timing.',
+    rec: 'Expose yourself to natural sunlight within 30 minutes of waking. Gradually shift your sleep time earlier each night.',
+    scoreKey: 'circadian', maxKey: 'circadianMax'
+  }
+];
+
+/* ══════════════════════════════════════════════════════
+   SUBMIT & RESULTS
+══════════════════════════════════════════════════════ */
+let _submissionData = {};
+
+document.getElementById('btnSubmit').addEventListener('click', async () => {
+  const name  = document.getElementById('q_name').value.trim();
+  const phone = document.getElementById('q_phone').value.trim();
+  const email = document.getElementById('q_email').value.trim();
+  const pid   = 'PT-' + Math.floor(1000 + Math.random() * 9000);
+  const date  = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+  const sc    = calcScores();
+
+  _submissionData = { name, phone, email, pid, date, sc };
+
+  // Build results UI
+  buildResults(name, phone, email, pid, date, sc);
+
+  // Navigate to results step
+  goToStep('step-results');
+
+  // Send to AWS in background
+  try {
+    const payload = buildPayload(name, phone, email, pid, sc);
+    const res = await fetch(AWS_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error('Server error ' + res.status);
+    showBanner('Patient record saved successfully.', 'ok');
+  } catch(e) {
+    // silent - report works without server save
+  }
+});
+
+function showBanner(msg, type) {
+  const b = document.getElementById('aws-banner');
+  b.textContent = msg;
+  b.className = 'aws-banner no-print ' + type;
+  b.style.display = 'block';
 }
 
-/* ── SUBMIT ── */
-let _data = {};
+function buildResults(name, phone, email, pid, date, sc) {
+  // Patient info grid
+  const rows = [
+    ['Name', name || '—'],
+    ['Age', (document.getElementById('q_age').value || '—') + (document.getElementById('q_age').value ? ' years' : '')],
+    ['Gender', rv('q_gender') + (rv('q_gender') === 'Female' && rv('q_menstrual') !== '—' ? ` (${rv('q_menstrual')})` : '')],
+    ['Height / Weight', `${document.getElementById('q_height').value || '—'} cm / ${document.getElementById('q_weight').value || '—'} kg`],
+    ['Assessment Date', date],
+    ['Patient ID', pid],
+  ];
+  if (phone) rows.push(['Contact', phone]);
+  if (email) rows.push(['Email', email]);
 
-async function submitForm() {
-    const name  = document.getElementById('q-name').value.trim();
-    const phone = document.getElementById('q-phone').value.trim();
-    const email = document.getElementById('q-email').value.trim();
-    const errEl = document.getElementById('err-msg');
-    const btn   = document.getElementById('submit-btn');
-    errEl.style.display = 'none';
-    if (!name) { errEl.textContent = 'Please enter your full name.'; errEl.style.display = 'block'; return; }
+  document.getElementById('patientInfoGrid').innerHTML = rows
+    .map(([l, v]) => `<div class="patient-info-item"><strong>${l}</strong>${v}</div>`)
+    .join('');
 
-    btn.disabled = true;
-    btn.textContent = 'Generating report…';
+  // Score all disorders
+  const scored = DISORDERS.map(d => ({
+    ...d,
+    score: sc[d.scoreKey],
+    max: sc[d.maxKey],
+    pct: pct(sc[d.scoreKey], sc[d.maxKey]),
+    tier: tier(sc[d.scoreKey], sc[d.maxKey])
+  })).sort((a, b) => b.pct - a.pct);
 
-    buildReport(name, phone, email);
-    document.getElementById('form-section').style.display = 'none';
-    document.getElementById('results').style.display = 'block';
-    window.scrollTo(0,0);
+  const primary = scored[0];
+  const rest    = scored.slice(1);
 
-    /* send to AWS in background — report shows regardless */
-    try {
-        const payload = buildPayload(name, phone, email);
-        const res = await fetch(AWS_API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-        if (!res.ok) throw new Error('Server error ' + res.status);
-        setBanner('Patient record saved successfully.', 'ok');
-        const pdfUrl = 'https://4a8c465e-d793-4529-bb91-1c5fcd83d976-00-26pqet0rkpacc.janeway.replit.dev/api/report/' + _data.pid;
-        const dlBtn = document.getElementById('pdf-download-btn');
-        if (dlBtn) { dlBtn.setAttribute('href', pdfUrl); dlBtn.style.display = 'block'; }
-    } catch(e) {
-        /* silently ignore — report works without server save */
-    } finally {
-        btn.disabled = false;
-        btn.textContent = 'Generate Sleep Analysis Report';
+  // Primary finding
+  if (primary.score === 0) {
+    document.getElementById('primaryFindingSection').style.display = 'block';
+    document.getElementById('primaryFindingCard').innerHTML = `
+      <div class="no-concerns">
+        <h4>✅ No significant concerns detected</h4>
+        <p>Your responses do not indicate significant sleep disorder indicators at this time. Continue maintaining good sleep hygiene and re-assess if symptoms change.</p>
+      </div>`;
+  } else {
+    document.getElementById('primaryFindingSection').style.display = 'block';
+    document.getElementById('primaryFindingCard').innerHTML = resultCardHTML(primary);
+  }
+
+  // Additional findings
+  const relevantRest = rest.filter(d => d.score > 0);
+  if (relevantRest.length > 0) {
+    document.getElementById('additionalFindingsSection').style.display = 'block';
+    document.getElementById('resultsGrid').innerHTML = relevantRest.map(resultCardHTML).join('');
+  } else {
+    document.getElementById('additionalFindingsSection').style.display = 'none';
+  }
+
+  // Comorbid section
+  const highOrMod = scored.filter(d => d.tier === 'high' || d.tier === 'moderate');
+  if (highOrMod.length >= 2) {
+    document.getElementById('comorbidSection').style.display = 'block';
+    document.getElementById('comorbidList').innerHTML = highOrMod.map(d =>
+      `<li><strong>${d.name}</strong> — ${tierLabel(d.tier)} (${d.pct}%)</li>`
+    ).join('');
+  } else {
+    document.getElementById('comorbidSection').style.display = 'none';
+  }
+}
+
+function resultCardHTML(d) {
+  return `
+    <div class="result-card tier-${d.tier}">
+      <div class="result-card-icon">${d.icon}</div>
+      <div class="result-card-body">
+        <h4>${d.name}</h4>
+        <span class="result-card-tier">${tierLabel(d.tier)}</span>
+        <div class="result-card-desc">${d.desc}</div>
+        <div class="result-card-rec">${d.rec}</div>
+      </div>
+    </div>`;
+}
+
+/* ══════════════════════════════════════════════════════
+   AWS PAYLOAD
+══════════════════════════════════════════════════════ */
+function buildPayload(name, phone, email, pid, sc) {
+  const medList  = getCheckedValues('q_medical');
+  const conList  = getCheckedValues('q_consumption');
+  const htVal    = parseFloat(document.getElementById('q_height').value) || null;
+  const wtVal    = parseFloat(document.getElementById('q_weight').value) || null;
+  const pr       = DISORDERS.map(d => ({ ...d, score: sc[d.scoreKey], max: sc[d.maxKey], pct: pct(sc[d.scoreKey], sc[d.maxKey]) }))
+                            .sort((a, b) => b.pct - a.pct)[0];
+
+  return {
+    submission_id: pid,
+    report_pdf_url: `https://4a8c465e-d793-4529-bb91-1c5fcd83d976-00-26pqet0rkpacc.janeway.replit.dev/api/report/${pid}`,
+    name, phone: phone || null, email: email || null,
+    age: parseInt(document.getElementById('q_age').value) || null,
+    gender: rv('q_gender'),
+    height: htVal, weight: wtVal,
+    neck_circumference: parseFloat(document.getElementById('q_neck').value) || null,
+    medical_conditions: medList,
+    work_schedule: rv('q_work'),
+    sleep_schedule: rv('q_schedule'),
+    sleep_duration: durText(),
+    bedtime: document.getElementById('q_sleep_start').value || null,
+    waketime: document.getElementById('q_wake_time').value || null,
+    snoring: rv('q_snoring_gate'),
+    observed_apnea: rv('q_witnessed_apnea'),
+    loud_snoring: rv('q_loud_snoring'),
+    multiple_wakeups: rv('q_night_awakenings'),
+    wake_headache: rv('q_morning_headache'),
+    wake_dry_mouth: rv('q_dry_mouth'),
+    difficulty_sleeping: rv('q_insomnia_gate'),
+    sleep_latency: rv('q_sleep_latency'),
+    wakeup_during_night: rv('q_night_waking'),
+    difficulty_back_sleep: rv('q_difficulty_back_sleep'),
+    excessive_daytime_sleepiness: rv('q_hypersomnia_gate'),
+    difficulty_waking: rv('q_difficulty_waking'),
+    daytime_tired: rv('q_daytime_sleepy'),
+    tired_frequency: rv('q_sleepy_freq'),
+    nap_frequency: rv('q_nap_freq'),
+    nap_duration: rv('q_nap_duration'),
+    nap_refreshed: rv('q_nap_refreshed'),
+    bedtime_struggle: rv('q_circadian_gate'),
+    chronotype: rv('q_chronotype'),
+    brain_fog: rv('q_brain_fog'),
+    social_jetlag: rv('q_weekend_shift'),
+    symptom_duration: rv('q_duration'),
+    patient: {
+      patient_id: pid, name, phone: phone || null, email: email || null,
+      age: parseInt(document.getElementById('q_age').value) || null,
+      gender: rv('q_gender'),
+      menstrual_status: rv('q_gender') === 'Female' ? rv('q_menstrual') : null,
+      height_cm: htVal, weight_kg: wtVal,
+      neck_cm: parseFloat(document.getElementById('q_neck').value) || null,
+      assessment_date: new Date().toISOString()
+    },
+    lifestyle: {
+      work_schedule: rv('q_work'),
+      sleep_schedule: rv('q_schedule'), sleep_duration: durText(),
+      medical_conditions: medList,
+      consumption: {
+        medications: conList.includes('Medications'),
+        caffeine:    conList.includes('Caffeine'),
+        alcohol:     conList.includes('Alcohol'),
+        smoking:     conList.includes('Smoking')
+      }
+    },
+    questionnaire: {
+      sleep_satisfaction: rv('q_sleep_satisfaction'),
+      daytime_functioning: rv('q_daytime_satisfaction'),
+      daytime_tired: rv('q_daytime_sleepy'),
+      tired_frequency: rv('q_sleepy_freq'),
+      difficulty_sleeping: rv('q_insomnia_gate'),
+      sleep_latency: rv('q_sleep_latency'),
+      wakeup_night: rv('q_night_waking'),
+      back_sleep: rv('q_difficulty_back_sleep'),
+      excess_sleepy: rv('q_hypersomnia_gate'),
+      difficulty_wakeup: rv('q_difficulty_waking'),
+      nap_frequency: rv('q_nap_freq'),
+      nap_duration: rv('q_nap_duration'),
+      nap_refreshed: rv('q_nap_refreshed'),
+      snoring: rv('q_snoring_gate'),
+      observed_apnea: rv('q_witnessed_apnea'),
+      loud_snoring: rv('q_loud_snoring'),
+      wakeup_multiple: rv('q_night_awakenings'),
+      morning_headache: rv('q_morning_headache'),
+      dry_mouth: rv('q_dry_mouth'),
+      bedtime_struggle: rv('q_circadian_gate'),
+      chronotype: rv('q_chronotype'),
+      brain_fog: rv('q_brain_fog'),
+      social_jetlag: rv('q_weekend_shift'),
+      symptom_duration: rv('q_duration')
+    },
+    analysis: {
+      primary_risk: pr.name,
+      primary_risk_key: pr.key,
+      confidence_percent: pr.pct,
+      risk_level: tier(pr.score, pr.max),
+      scores: {
+        insomnia:    { score: sc.insomnia,    max: sc.insomniaMax },
+        hypersomnia: { score: sc.hypersomnia, max: sc.hypersomMax },
+        apnea:       { score: sc.apnea,       max: sc.apneaMax    },
+        circadian:   { score: sc.circadian,   max: sc.circadianMax }
+      }
     }
+  };
 }
 
-function setBanner(msg, type) {
-    const b = document.getElementById('aws-banner');
-    b.textContent = msg;
-    b.className = 'aws-banner no-print ' + type;
-    b.style.display = 'block';
-}
-
-/* ── BUILD REPORT ── */
-function buildReport(name, phone, email) {
-    const age     = document.getElementById('q-age').value    || '—';
-    const height  = document.getElementById('q-height').value || '—';
-    const weight  = document.getElementById('q-weight').value || '—';
-    const neck    = document.getElementById('q-neck').value   || 'Not provided';
-    const gender  = rv('gender');
-    const mens    = gender === 'Female' ? rv('menstrual') : null;
-    const date    = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
-    const pid     = 'PT-' + Math.floor(1000 + Math.random()*9000);
-    const dur     = durText();
-    const sc      = calcScores();
-    _data         = { name, phone, email, age, gender, mens, height, weight, neck, date, pid, dur, sc };
-
-    document.getElementById('res-date').textContent = 'Assessment Date: ' + date;
-
-    /* Patient grid */
-    const patientRows = [
-        ['Name', name],
-        ['Age', age + ' years'],
-        ['Gender', gender + (mens ? ' (' + mens + ')' : '')],
-        ['Height / Weight', height + ' cm / ' + weight + ' kg'],
-        ['Date of Assessment', date],
-        ['Patient ID', pid]
-    ];
-    if (phone) patientRows.push(['Contact Number', phone]);
-    if (email) patientRows.push(['Email Address', email]);
-
-    document.getElementById('res-patient').innerHTML = patientRows
-        .map(([l,v]) => '<div class="info-item"><strong>'+l+'</strong>'+v+'</div>').join('');
-
-    /* Risk card — most likely risk only */
-    const pr   = topRisk(sc);
-    const lv   = lvl(pr.s, pr.max);
-    const conf = pct(pr.s, pr.max);
-
-    document.getElementById('res-analysis').innerHTML = pr.s === 0
-        ? '<div class="no-risk-card">No significant sleep disorder indicators detected. Continue monitoring your sleep health and consult a specialist if symptoms arise.</div>'
-        : '<div class="result-card ' + tierClass(lv) + '">' +
-          '<div class="risk-label">Most Likely Risk</div>' +
-          '<div class="risk-name">' + pr.name + '</div>' +
-          '<div class="risk-desc">' + pr.desc + '</div>' +
-          '<div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;">' +
-          '<span class="risk-badge">' + lvlTxt(lv) + '</span>' +
-          '<span class="risk-score-txt">Score: ' + pr.s + ' / ' + pr.max + ' &nbsp;|&nbsp; Confidence: ' + conf + '%</span>' +
-          '</div>' +
-          '<div class="conf-wrap"><div class="conf-label">Confidence Level</div>' +
-          '<div class="conf-track"><div class="conf-fill" style="width:'+conf+'%"></div></div></div>' +
-          '</div>';
-
-    /* Medical + consumption lists */
-    const MED = [['Diabetes','med-diabetes'],['Hypertension','med-hypertension'],
-                 ['Thyroid Disorder','med-thyroid'],['PCOS','med-pcos'],
-                 ['Cardiac Disease','med-cardiac'],['Stroke History','med-stroke'],
-                 ['Anxiety','med-anxiety'],['Depression','med-depression'],['Stress','med-stress']];
-    const medList = MED.filter(([,id]) => ck(id)).map(([n]) => n).join(', ') || 'None reported';
-    const conList = [['Medications','con-meds'],['Caffeine','con-caffeine'],
-                     ['Alcohol','con-alcohol'],['Smoking/Nicotine','con-smoking']]
-                    .filter(([,id]) => ck(id)).map(([n]) => n).join(', ') || 'None reported';
-    const napV = rv('nap-freq');
-    const napD = napV !== "I don't nap" ? ' | Duration: ' + rv('nap-dur') + ' | Refreshed: ' + rv('nap-refresh') : '';
-
-    /* Summary rows */
-    const rows = [
-        ['Sleep Schedule',            rv('sleep-sched') + ' — ' + dur],
-        ['Work Schedule',              rv('work')],
-        ['Sleep Satisfaction',         rv('sleep-sat')],
-        ['Daytime Functioning',        rv('day-sat')],
-        ['Daytime Tiredness',          rv('daytime-tired') + (rv('daytime-tired')==='Yes' ? ' — ' + rv('tired-freq') : '')],
-        ['Medical Conditions',         medList],
-        ['Current Consumption',        conList],
-        ['Difficulty Falling Asleep',  rv('diff-sleep') + (rv('diff-sleep')==='Yes' ? ' — Onset: ' + rv('sleep-onset') : '')],
-        ['Night Waking',               rv('wakeup-night')],
-        ['Difficulty Returning to Sleep', rv('back-sleep')],
-        ['Excessive Daytime Sleepiness', rv('excess-sleepy')],
-        ['Difficulty Waking Up',       rv('diff-wakeup')],
-        ['Napping Frequency',          napV + napD],
-        ['Snoring',                    rv('snoring')],
-        ['Observed Breathing Stops',   rv('observed-apnea')],
-        ['Loud Snoring',               rv('loud-snoring')],
-        ['Waking 3+ Times / Night',    rv('wakeup-multiple')],
-        ['Morning Headache',           rv('headache')],
-        ['Morning Dry Mouth',          rv('dry-mouth')],
-        ['Bedtime Difficulty (10–11 PM)', rv('bedtime-struggle')],
-        ['Chronotype',                 rv('chronotype')],
-        ['Brain Fog on Waking',        rv('brain-fog')],
-        ['Weekend Sleep Shift',        rv('social-jetlag')],
-        ['Duration of Symptoms',       rv('duration')]
-    ];
-    document.getElementById('res-summary').innerHTML = rows
-        .map(([q,a]) => '<div class="resp-row"><span class="resp-q">'+q+'</span><span class="resp-a">'+a+'</span></div>')
-        .join('');
-
-    /* Recommendations */
-    const recs = [];
-    if (pr.key==='insomnia'    || sc.insomnia>=2)    recs.push('Practice consistent sleep and wake times daily — even on weekends — to reinforce your body clock. Avoid screens 60 minutes before bed and consider a calming pre-sleep routine.');
-    if (pr.key==='hypersomnia' || sc.hypersomnia>=2) recs.push('Limit naps to under 20 minutes before 3 PM. If you continue to feel excessively sleepy despite adequate night sleep, please consult a sleep specialist for further evaluation.');
-    if (pr.key==='apnea'       || sc.apnea>=3)       recs.push('Your responses indicate several signs associated with Sleep Apnea. A formal evaluation including a sleep study (polysomnography) is strongly recommended. Avoid sleeping on your back and limit alcohol, especially in the evening.');
-    if (pr.key==='circadian'   || sc.circadian>=2)   recs.push('Your responses suggest a possible circadian rhythm misalignment. Expose yourself to natural sunlight within 30 minutes of waking. Gradually shift your sleep time by 15 minutes earlier each night if needed.');
-    if (ck('med-anxiety')||ck('med-depression')||ck('med-stress')) recs.push('Anxiety, depression, and stress disorders significantly impact sleep quality. Speak with your treating physician about integrating sleep management into your mental health care plan.');
-    if (ck('con-caffeine')) recs.push('Avoid caffeine after 2 PM as it can significantly disrupt sleep quality and the ability to fall asleep.');
-    if (ck('con-alcohol'))  recs.push('While alcohol may help you fall asleep initially, it disrupts sleep architecture and reduces sleep quality. Limit consumption, especially within 3 hours of bedtime.');
-    if (ck('con-smoking'))  recs.push('Nicotine is a stimulant that can cause sleep fragmentation. Consider speaking with your healthcare provider about cessation support.');
-    if (ck('med-hypertension')||ck('med-cardiac')) recs.push('Your cardiovascular history may be contributing to sleep disturbances. Please ensure your sleep concerns are discussed with your treating physician at your next visit.');
-    if (!recs.length) recs.push('Your responses suggest relatively low sleep concern indicators. Continue maintaining good sleep hygiene: regular schedule, dark and cool bedroom, and limiting screen time before bed. Re-assess if symptoms change.');
-    recs.push('This assessment is a screening tool and not a clinical diagnosis. Please consult a qualified healthcare or sleep medicine professional for a complete evaluation and personalised management plan.');
-    document.getElementById('res-recs').innerHTML = recs.map(t => '<div class="rec-item">'+t+'</div>').join('');
-}
-
-/* ── AWS PAYLOAD ── */
-function buildPayload(name, phone, email) {
-    const sc  = _data.sc || calcScores();
-    const pr  = topRisk(sc);
-    const s   = getT('sl-h','sl-m','sl-ap');
-    const w   = getT('wu-h','wu-m','wu-ap');
-    const pid = _data.pid || ('PT-' + Math.floor(1000 + Math.random()*9000));
-    const MED = [['Diabetes','med-diabetes'],['Hypertension','med-hypertension'],
-                 ['Thyroid Disorder','med-thyroid'],['PCOS','med-pcos'],
-                 ['Cardiac Disease','med-cardiac'],['Stroke History','med-stroke'],
-                 ['Anxiety','med-anxiety'],['Depression','med-depression'],['Stress','med-stress']];
-    const htVal  = parseFloat(document.getElementById('q-height').value) || null;
-    const wtVal  = parseFloat(document.getElementById('q-weight').value) || null;
-    const medList = MED.filter(([,id])=>ck(id)).map(([n])=>n);
-
-    return {
-        submission_id: pid,
-        report_pdf_url: 'https://4a8c465e-d793-4529-bb91-1c5fcd83d976-00-26pqet0rkpacc.janeway.replit.dev/api/report/' + pid,
-
-        name:              name,
-        phone:             phone || null,
-        email:             email || null,
-        age:               parseInt(document.getElementById('q-age').value) || null,
-        gender:            rv('gender'),
-        height:            htVal,
-        weight:            wtVal,
-        neck_circumference: parseFloat(document.getElementById('q-neck').value) || null,
-        medical_conditions: medList,
-        work_schedule:     rv('work'),
-        sleep_schedule:    rv('sleep-sched'),
-        sleep_duration:    _data.dur,
-        bedtime_24h:       s ? fmt24(s.h,s.m,s.ap) : null,
-        waketime_24h:      w ? fmt24(w.h,w.m,w.ap) : null,
-        snoring:           rv('snoring'),
-        observed_apnea:    rv('observed-apnea'),
-        loud_snoring:      rv('loud-snoring'),
-        multiple_wakeups:  rv('wakeup-multiple'),
-        wake_headache:     rv('headache'),
-        wake_dry_mouth:    rv('dry-mouth'),
-        difficulty_sleeping:           rv('diff-sleep'),
-        wakeup_during_night:           rv('wakeup-night'),
-        difficulty_back_sleep:         rv('back-sleep'),
-        excessive_daytime_sleepiness:  rv('excess-sleepy'),
-        difficulty_waking:             rv('diff-wakeup'),
-        daytime_tired:                 rv('daytime-tired'),
-        tired_frequency:               rv('tired-freq'),
-        nap_frequency:                 rv('nap-freq'),
-        nap_duration:                  rv('nap-dur'),
-        nap_refreshed:                 rv('nap-refresh'),
-        bedtime_struggle:              rv('bedtime-struggle'),
-        chronotype:                    rv('chronotype'),
-        brain_fog:                     rv('brain-fog'),
-        social_jetlag:                 rv('social-jetlag'),
-        symptom_duration:              rv('duration'),
-
-        patient: {
-            patient_id:       pid,
-            name:             name,
-            phone:            phone || null,
-            email:            email || null,
-            age:              parseInt(document.getElementById('q-age').value) || null,
-            gender:           rv('gender'),
-            menstrual_status: rv('gender')==='Female' ? rv('menstrual') : null,
-            height_cm:        htVal,
-            weight_kg:        wtVal,
-            neck_cm:          parseFloat(document.getElementById('q-neck').value) || null,
-            assessment_date:  new Date().toISOString()
-        },
-        lifestyle: {
-            work_schedule:       rv('work'),
-            sleep_schedule:      rv('sleep-sched'),
-            sleep_duration:      _data.dur,
-            sleep_bedtime:       s ? fmt12(s.h,s.m,s.ap) : null,
-            sleep_waketime:      w ? fmt12(w.h,w.m,w.ap) : null,
-            bedtime_24h:         s ? fmt24(s.h,s.m,s.ap) : null,
-            waketime_24h:        w ? fmt24(w.h,w.m,w.ap) : null,
-            medical_conditions:  medList,
-            consumption: { medications:ck('con-meds'), caffeine:ck('con-caffeine'), alcohol:ck('con-alcohol'), smoking:ck('con-smoking') }
-        },
-        questionnaire: {
-            sleep_satisfaction:   rv('sleep-sat'),
-            daytime_functioning:  rv('day-sat'),
-            daytime_tired:        rv('daytime-tired'),
-            tired_frequency:      rv('tired-freq'),
-            difficulty_sleeping:  rv('diff-sleep'),
-            sleep_onset:          rv('sleep-onset'),
-            wakeup_night:         rv('wakeup-night'),
-            back_sleep:           rv('back-sleep'),
-            excess_sleepy:        rv('excess-sleepy'),
-            difficulty_wakeup:    rv('diff-wakeup'),
-            nap_frequency:        rv('nap-freq'),
-            nap_duration:         rv('nap-dur'),
-            nap_refreshed:        rv('nap-refresh'),
-            snoring:              rv('snoring'),
-            observed_apnea:       rv('observed-apnea'),
-            loud_snoring:         rv('loud-snoring'),
-            wakeup_multiple:      rv('wakeup-multiple'),
-            morning_headache:     rv('headache'),
-            dry_mouth:            rv('dry-mouth'),
-            bedtime_struggle:     rv('bedtime-struggle'),
-            chronotype:           rv('chronotype'),
-            brain_fog:            rv('brain-fog'),
-            social_jetlag:        rv('social-jetlag'),
-            symptom_duration:     rv('duration')
-        },
-        analysis: {
-            primary_risk:        pr.name,
-            primary_risk_key:    pr.key,
-            confidence_percent:  pct(pr.s, pr.max),
-            risk_level:          lvl(pr.s, pr.max),
-            scores: {
-                insomnia:    { score: sc.insomnia,    max: sc.insomniaMax },
-                hypersomnia: { score: sc.hypersomnia, max: sc.hypersomMax },
-                apnea:       { score: sc.apnea,       max: sc.apneaMax    },
-                circadian:   { score: sc.circadian,   max: sc.circadianMax }
-            }
-        }
-    };
-}
-
-/* ── RESET ── */
-function resetForm() {
-    document.getElementById('results').style.display = 'none';
-    document.getElementById('form-section').style.display = 'block';
-    document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => el.checked = false);
-    document.querySelectorAll('input[type="number"], input[type="text"], input[type="tel"], input[type="email"]').forEach(el => el.value = '');
-    document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
-    ['menstrual-block','tired-freq-block','diff-sleep-block','nap-block'].forEach(id => document.getElementById(id).classList.add('hidden'));
-    document.getElementById('fixed-block').style.display = 'none';
-    document.getElementById('irreg-block').style.display = 'none';
-    document.getElementById('dur-hint').style.display = 'none';
-    document.getElementById('aws-banner').style.display = 'none';
-    document.getElementById('err-msg').style.display = 'none';
-    window.scrollTo(0,0);
-}
+/* ══════════════════════════════════════════════════════
+   RESET
+══════════════════════════════════════════════════════ */
+document.getElementById('btnRestart').addEventListener('click', () => {
+  // Reset all inputs
+  document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => el.checked = false);
+  document.querySelectorAll('input[type="number"], input[type="text"], input[type="tel"], input[type="email"], input[type="time"]').forEach(el => el.value = '');
+  document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
+  // Reset visual selected states
+  document.querySelectorAll('.radio-option, .checkbox-option').forEach(el => el.classList.remove('selected'));
+  // Hide conditionals
+  ['menstrualGroup', 'fixedScheduleGroup', 'irregularScheduleGroup',
+   'daytimeSleepyGroup', 'insomniaSubQuestions', 'hypersomniaSubQuestions',
+   'napFollowUpQuestions', 'apneaSubQuestions', 'circadianSubQuestions'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+  // Reset consent
+  document.getElementById('consentCheckbox').checked = false;
+  document.getElementById('btnStartConsent').disabled = true;
+  // Reset banner
+  document.getElementById('aws-banner').style.display = 'none';
+  // Go back to start
+  goToStep('step-consent');
+});
 </script>
 </body>
 </html>
