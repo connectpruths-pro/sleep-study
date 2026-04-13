@@ -650,8 +650,9 @@ input[type="time"] { color-scheme: inherit; }
             <label class="checkbox-option"><input type="checkbox" name="q_medical" value="Depression" /> Depression</label>
             <label class="checkbox-option"><input type="checkbox" name="q_medical" value="Stress" /> Stress</label>
             <label class="checkbox-option"><input type="checkbox" name="q_medical" value="History of stroke" /> History of stroke</label>
+            <label class="checkbox-option" style="grid-column: 1 / -1;"><input type="checkbox" name="q_medical" value="None of the above" /> None of the above</label>
           </div>
-          <span class="validation-error">Please select at least one option (select "None of the above" if applicable)</span>
+          <span class="validation-error">Please select at least one option</span>
         </div>
         <div class="form-group required">
           <label>7. Current consumption <span class="hint">(tick all that apply)</span></label>
@@ -660,6 +661,7 @@ input[type="time"] { color-scheme: inherit; }
             <label class="checkbox-option"><input type="checkbox" name="q_consumption" value="Caffeine" /> Caffeine (tea/coffee/energy drinks)</label>
             <label class="checkbox-option"><input type="checkbox" name="q_consumption" value="Alcohol" /> Alcohol</label>
             <label class="checkbox-option"><input type="checkbox" name="q_consumption" value="Smoking" /> Smoking/Nicotine</label>
+            <label class="checkbox-option" style="grid-column: 1 / -1;"><input type="checkbox" name="q_consumption" value="None" /> None</label>
           </div>
           <span class="validation-error">Please select at least one option</span>
         </div>
@@ -1451,6 +1453,54 @@ document.addEventListener('input', e => {
       formGroup.classList.remove('error');
     }
   }
+});
+
+/* ══════════════════════════════════════════════════════
+   MUTUALLY EXCLUSIVE CHECKBOXES (None options)
+══════════════════════════════════════════════════════ */
+
+// Question 6: Medical conditions - None of the above
+const medicalCheckboxes = document.querySelectorAll('input[name="q_medical"]');
+const medicalNoneCheckbox = document.querySelector('input[name="q_medical"][value="None of the above"]');
+
+medicalCheckboxes.forEach(cb => {
+  cb.addEventListener('change', () => {
+    if (cb === medicalNoneCheckbox && cb.checked) {
+      // Uncheck all others when "None" is selected
+      medicalCheckboxes.forEach(other => {
+        if (other !== cb) {
+          other.checked = false;
+          other.closest('.checkbox-option')?.classList.remove('selected');
+        }
+      });
+    } else if (cb !== medicalNoneCheckbox && cb.checked && medicalNoneCheckbox) {
+      // Uncheck "None" when any other is selected
+      medicalNoneCheckbox.checked = false;
+      medicalNoneCheckbox.closest('.checkbox-option')?.classList.remove('selected');
+    }
+  });
+});
+
+// Question 7: Current consumption - None
+const consumptionCheckboxes = document.querySelectorAll('input[name="q_consumption"]');
+const consumptionNoneCheckbox = document.querySelector('input[name="q_consumption"][value="None"]');
+
+consumptionCheckboxes.forEach(cb => {
+  cb.addEventListener('change', () => {
+    if (cb === consumptionNoneCheckbox && cb.checked) {
+      // Uncheck all others when "None" is selected
+      consumptionCheckboxes.forEach(other => {
+        if (other !== cb) {
+          other.checked = false;
+          other.closest('.checkbox-option')?.classList.remove('selected');
+        }
+      });
+    } else if (cb !== consumptionNoneCheckbox && cb.checked && consumptionNoneCheckbox) {
+      // Uncheck "None" when any other is selected
+      consumptionNoneCheckbox.checked = false;
+      consumptionNoneCheckbox.closest('.checkbox-option')?.classList.remove('selected');
+    }
+  });
 });
 
 /* ══════════════════════════════════════════════════════
