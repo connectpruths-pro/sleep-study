@@ -568,6 +568,7 @@ input[type="time"] { color-scheme: inherit; }
           <input type="checkbox" id="consentCheckbox" />
           <span>I understand that this is a screening tool only and agree to proceed.</span>
         </label>
+        <div class="g-recaptcha" data-sitekey="6LfIobYsAAAAABTJ5iPq6Weigepuu46FatNRC6-0"></div>
         <button class="btn btn-primary btn-lg" id="btnStartConsent" disabled>Start Screening</button>
       </div>
     </section>
@@ -986,7 +987,6 @@ input[type="time"] { color-scheme: inherit; }
           </div>
           <span class="validation-error">Please select an option</span>
         </div>
-        <div class="g-recaptcha" data-sitekey="6LfIobYsAAAAABTJ5iPq6Weigepuu46FatNRC6-0"></div>
         <div class="btn-row">
           <button class="btn btn-secondary" data-prev="step-circadian">Back</button>
           <button class="btn btn-primary" id="btnSubmit">Submit &amp; View Results</button>
@@ -1639,12 +1639,37 @@ const DISORDERS = [
 ══════════════════════════════════════════════════════ */
 let _submissionData = {};
 
+// Store reCAPTCHA token after consent step
+let _recaptchaToken = '';
+
+// Callback when reCAPTCHA is completed
+window.onRecaptchaCompleted = function(token) {
+  _recaptchaToken = token;
+  updateStartButton();
+};
+
+// Update reCAPTCHA data-callback
+document.addEventListener('DOMContentLoaded', () => {
+  const recaptchaDiv = document.querySelector('.g-recaptcha');
+  if (recaptchaDiv) {
+    recaptchaDiv.setAttribute('data-callback', 'onRecaptchaCompleted');
+  }
+});
+
+function updateStartButton() {
+  const consentChecked = document.getElementById('consentCheckbox').checked;
+  const hasRecaptcha = _recaptchaToken !== '';
+  document.getElementById('btnStartConsent').disabled = !(consentChecked && hasRecaptcha);
+}
+
+document.getElementById('consentCheckbox').addEventListener('change', updateStartButton);
+
 document.getElementById('btnSubmit').addEventListener('click', async () => {
   // Validate duration step before submit
   if (!validateStep('step-duration')) {
     return; // Stop if validation fails
   }
-  
+
   const name  = document.getElementById('q_name').value.trim();
   const phone = document.getElementById('q_phone').value.trim();
   const email = document.getElementById('q_email').value.trim();
@@ -1663,6 +1688,9 @@ document.getElementById('btnSubmit').addEventListener('click', async () => {
   // Send to AWS in background
   try {
     const payload = buildPayload(name, phone, email, pid, sc);
+    // Add reCAPTCHA token to payload (collected at consent step)
+    payload.recaptchaToken = _recaptchaToken;
+
     const res = await fetch(AWS_API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
@@ -1670,6 +1698,7 @@ document.getElementById('btnSubmit').addEventListener('click', async () => {
     });
     if (!res.ok) throw new Error('Server error ' + res.status);
     showBanner('Patient record saved successfully.', 'ok');
+
   } catch(e) {
     // silent - report works without server save
   }
