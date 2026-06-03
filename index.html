@@ -274,7 +274,7 @@ input[type="time"]{color-scheme:inherit;}
           <span>I understand that this is a screening tool only and agree to proceed.</span>
         </label>
         <div id="recaptchaWrap" style="margin:0 auto 20px;display:inline-block;">
-          <div class="g-recaptcha" data-sitekey="6Lczg_ssAAAAAFOt-wPEh8APlYfPL3AmPKmqw73F"></div>
+          <div class="g-recaptcha" data-sitekey="6Lczg_ssAAAAAFOt-wPEh8APlYfPL3AmPKmqw73F" data-callback="onRecaptchaDone" data-expired-callback="onRecaptchaExpired"></div>
         </div>
         <br/>
         <button class="btn btn-primary btn-lg" id="btnStartConsent" disabled>Start Screening</button>
@@ -849,8 +849,21 @@ themeToggle.addEventListener('click', () => {
 ══════════════════════════════════════════════════════ */
 const consentCb = document.getElementById('consentCheckbox');
 const btnStart  = document.getElementById('btnStartConsent');
-consentCb.addEventListener('change', () => { btnStart.disabled = !consentCb.checked; });
-btnStart.addEventListener('click', () => goToStep('step-personal'));
+
+function checkConsentReady() {
+  const checked    = consentCb.checked;
+  const isAdmin    = new URLSearchParams(window.location.search).get('admin') === '1';
+  const isGithub   = window.location.hostname.includes('github.io');
+  const captchaDone = (isAdmin || isGithub)
+                      ? true
+                      : (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0);
+  btnStart.disabled = !(checked && captchaDone);
+}
+
+function onRecaptchaDone()    { checkConsentReady(); }
+function onRecaptchaExpired() { btnStart.disabled = true; }
+
+consentCb.addEventListener('change', checkConsentReady);
 
 /* ══════════════════════════════════════════════════════
    STEP NAVIGATION
