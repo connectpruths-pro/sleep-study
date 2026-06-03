@@ -1282,9 +1282,10 @@ document.getElementById('btnSubmit').addEventListener('click', async () => {
     if (!res.ok) throw new Error('Server error ' + res.status);
     showBanner('✅ Patient record saved to database.', 'ok');
   } catch(e) {
-    showBanner('⚠️ Results shown locally — database save failed: ' + e.message, 'warn');
-  }
-});
+    console.error('Submit error:', e);
+    showBanner('⚠️ Results shown locally — database save failed: ' + e.message + 
+               ' | Check browser console (F12) for details', 'warn');
+}
 
 function showBanner(msg, type) {
   const b = document.getElementById('aws-banner');
