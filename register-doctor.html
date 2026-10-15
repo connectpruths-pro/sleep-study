@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Activate Doctor Account — Aurora Sleep Disorder Screening." />
+  <title>Doctor Account Activation — Aurora Sleep Disorder Screening</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    .register-container {
+      max-width: 520px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .register-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius);
+      padding: 36px;
+      box-shadow: var(--shadow-lg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+    }
+
+    .welcome-banner {
+      background: var(--accent-glow);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-xs);
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .welcome-banner i {
+      font-size: 2rem;
+      color: var(--accent);
+    }
+
+    .doctor-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      background: var(--bg-option);
+      border: 1px solid var(--border-option);
+      padding: 12px 16px;
+      border-radius: var(--radius-xs);
+      font-size: 0.85rem;
+      margin-bottom: 24px;
+    }
+
+    .alert-box {
+      padding: 12px 16px;
+      border-radius: var(--radius-xs);
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .alert-danger {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--danger-text, #ef4444);
+    }
+
+    .alert-success {
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: var(--success-text, #22c55e);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="app-header" id="appHeader">
+    <div class="header-inner">
+      <div class="header-left">
+        <img src="logo.png" alt="Aurora Sleep Disorder Screening Logo" class="header-logo" />
+      </div>
+      <div class="header-center">
+        <span class="header-title">Doctor Account Activation</span>
+      </div>
+      <div class="header-right">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <span class="theme-icon" id="themeIcon"><i class="bi bi-moon-fill"></i></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="register-container">
+
+    <!-- LOADING STATE -->
+    <div id="stateLoading" class="register-card" style="text-align: center; padding: 48px 24px;">
+      <i class="bi bi-arrow-repeat spin" style="font-size: 2.5rem; color: var(--accent); display: inline-block; animation: spin 1s linear infinite;"></i>
+      <h3 style="margin-top: 16px; font-size: 1.1rem; color: var(--text-primary);">Validating Invitation Link...</h3>
+    </div>
+
+    <!-- ERROR STATE -->
+    <div id="stateError" class="register-card" style="display: none; text-align: center; padding: 40px 24px;">
+      <i class="bi bi-exclamation-octagon-fill" style="font-size: 3rem; color: var(--danger);"></i>
+      <h2 style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin: 16px 0 8px 0;">Invitation Link Error</h2>
+      <p id="errorMessage" style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 24px;">
+        This invitation link is invalid or has expired. Please contact your platform administrator for a new registration link.
+      </p>
+      <a href="login.html" class="btn btn-secondary btn-md">Go to Login Page</a>
+    </div>
+
+    <!-- FORM STATE -->
+    <div id="stateForm" class="register-card" style="display: none;">
+      
+      <div class="welcome-banner">
+        <i class="bi bi-person-badge-fill"></i>
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--accent); letter-spacing: 0.5px;">Account Invitation</div>
+          <h2 style="font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin: 0;" id="welcomeDoctorName">Welcome Doctor</h2>
+        </div>
+      </div>
+
+      <div class="doctor-meta-grid">
+        <div>
+          <span style="color: var(--text-secondary); font-size: 0.75rem; display: block;">Email Address</span>
+          <strong id="metaEmail" style="color: var(--text-primary);">—</strong>
+        </div>
+        <div>
+          <span style="color: var(--text-secondary); font-size: 0.75rem; display: block;">Specialization</span>
+          <strong id="metaSpec" style="color: var(--text-primary);">—</strong>
+        </div>
+      </div>
+
+      <div id="alertBox" class="alert-box" style="display: none;">
+        <i id="alertIcon" class="bi bi-exclamation-triangle-fill"></i>
+        <span id="alertMsg"></span>
+      </div>
+
+      <form id="activationForm" autocomplete="off">
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label for="regUsername">Choose Your Login ID (Username) <span class="req">*</span></label>
+          <input type="text" id="regUsername" class="input" placeholder="e.g. dr.smith or jsmith" required minlength="3" />
+          <span style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px; display: block;">You will use this Username to log into your Clinician Dashboard.</span>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label for="regPassword">Create Password <span class="req">*</span></label>
+          <input type="password" id="regPassword" class="input" placeholder="At least 6 characters" required minlength="6" />
+        </div>
+
+        <div class="form-group" style="margin-bottom: 28px;">
+          <label for="regConfirmPassword">Confirm Password <span class="req">*</span></label>
+          <input type="password" id="regConfirmPassword" class="input" placeholder="Re-enter password" required minlength="6" />
+        </div>
+
+        <button type="submit" id="btnActivate" class="btn btn-primary btn-lg" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <i class="bi bi-check-circle-fill"></i> Activate Account &amp; Access Dashboard
+        </button>
+      </form>
+    </div>
+
+  </main>
+
+  <style>
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+
+  <script src="register-doctor.js"></script>
+</body>
+
+</html>

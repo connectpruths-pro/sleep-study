@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Secure login portal for Aurora Sleep Disorder Screening Clinician Dashboard.">
+  <title>Log In — Aurora Sleep Disorder Screening</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - var(--header-h));
+      padding: 24px;
+      margin-top: var(--header-h);
+      position: relative;
+      z-index: 1;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 440px;
+      padding: 40px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      transition: var(--transition);
+    }
+
+    .login-card:hover {
+      border-color: rgba(129, 140, 248, 0.35);
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
+    }
+
+    .login-logo-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .login-logo {
+      height: 48px;
+      object-fit: contain;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .login-header h2 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .login-header p {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .alert-box {
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 24px;
+      display: none;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.4;
+    }
+
+    .alert-danger {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger);
+    }
+
+    .alert-success {
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      color: var(--success);
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="app-header" id="appHeader">
+    <div class="header-inner">
+      <div class="header-left">
+        <img src="logo.png" alt="Aurora Sleep Disorder Screening Logo" class="header-logo">
+      </div>
+      <div class="header-center">
+        <span class="header-title">Aurora Portal</span>
+      </div>
+      <div class="header-right" style="display:flex;align-items:center;">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <span class="theme-icon" id="themeIcon"><i class="bi bi-moon-fill"></i></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="login-container">
+    <div class="login-card">
+      <div class="login-logo-wrap">
+        <img src="logo.png" alt="Aurora Sleep Disorder Screening" class="login-logo">
+      </div>
+      
+      <div class="login-header">
+        <h2>Log In</h2>
+        <p>Access the Aurora Sleep Screening platform</p>
+      </div>
+
+      <div id="alertBox" class="alert-box">
+        <i id="alertIcon" class="bi"></i>
+        <span id="alertMessage"></span>
+      </div>
+
+      <form id="loginForm" autocomplete="off">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" class="input" placeholder="Enter username" required autofocus>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label for="password" style="margin-bottom: 0;">Password</label>
+            <a href="javascript:void(0)" id="btnForgotPass" style="font-size: 0.85rem; color: var(--accent); text-decoration: none; font-weight: 500;">
+              Forgot password?
+            </a>
+          </div>
+          <input type="password" id="password" class="input" placeholder="Enter password" required>
+        </div>
+
+        <button type="submit" id="btnLogin" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 20px;">
+          Log In
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <!-- Forgot Password Modal -->
+  <div id="forgotPassModal" class="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
+    <div class="card" style="max-width: 440px; width: 100%; position: relative; padding: 32px; border-radius: var(--radius); background: var(--bg-card); border: 1px solid var(--border-card); box-shadow: var(--shadow-lg);">
+      <button id="closeForgotModal" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 1.4rem; color: var(--text-muted); cursor: pointer;">
+        &times;
+      </button>
+
+      <div style="text-align: center; margin-bottom: 20px;">
+        <div style="font-size: 2.2rem; color: #a855f7; margin-bottom: 8px;">
+          <i class="bi bi-shield-lock"></i>
+        </div>
+        <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">Reset Password</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;">
+          Enter your registered Email or Username and we'll send you an instant link to reset your password.
+        </p>
+      </div>
+
+      <div id="forgotAlertBox" class="alert-box" style="margin-bottom: 16px;">
+        <i id="forgotAlertIcon" class="bi"></i>
+        <span id="forgotAlertMsg"></span>
+      </div>
+
+      <form id="forgotForm" autocomplete="off">
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label for="forgotIdentifier">Email or Username</label>
+          <input type="text" id="forgotIdentifier" class="input" placeholder="e.g. doctor@clinic.com or username" required autofocus>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <button type="button" id="btnCancelForgot" class="btn btn-secondary" style="flex: 1;">Cancel</button>
+          <button type="submit" id="btnSendReset" class="btn btn-primary" style="flex: 1;">Send Reset Link</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="login.js?v=20260901"></script>
+</body>
+
+</html>

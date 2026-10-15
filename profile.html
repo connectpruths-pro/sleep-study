@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Edit Doctor Profile — Aurora Sleep Disorder Screening." />
+  <title>Doctor Profile — Aurora Sleep Disorder Screening</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    .profile-container {
+      max-width: 640px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .profile-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-sm);
+      padding: 32px;
+      box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(24px);
+    }
+
+    .patient-link-card {
+      background: var(--accent-glow);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-xs);
+      padding: 16px 20px;
+      margin-bottom: 24px;
+    }
+
+    .link-copy-wrap {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .link-input {
+      flex: 1;
+      font-family: monospace;
+      font-size: 0.85rem;
+      background: var(--bg-input);
+      border: 1px solid var(--border-input);
+      color: var(--text-primary);
+      padding: 8px 12px;
+      border-radius: var(--radius-xs);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="app-header" id="appHeader">
+    <div class="header-inner">
+      <div class="header-left">
+        <img src="logo.png" alt="Aurora Sleep Disorder Screening Logo" class="header-logo" />
+      </div>
+      <div class="header-center">
+        <span class="header-title">Doctor Profile</span>
+      </div>
+      <div class="header-right" style="display:flex;align-items:center;gap:12px;">
+        <span id="userDisplay" style="font-size:0.85rem; font-weight:600; color:var(--text-secondary);"></span>
+        <a href="dashboard.html" class="btn btn-secondary btn-sm" style="padding: 6px 12px; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px;">
+          <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <span class="theme-icon" id="themeIcon"><i class="bi bi-moon-fill"></i></span>
+        </button>
+        <button id="btnLogout" class="btn btn-secondary btn-sm" style="padding: 6px 12px; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+          <i class="bi bi-box-arrow-right"></i> Logout
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="profile-container">
+    
+    <!-- Unique Patient Screening Link Card -->
+    <div class="patient-link-card">
+      <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+        <i class="bi bi-link-45deg" style="font-size: 1.2rem; color: var(--accent);"></i>
+        Your Unique Patient Screening Link
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 4px 0 10px 0;">
+        Share this link with your patients. Any patient who completes screening via this link will automatically appear in your dashboard.
+      </p>
+      <div class="link-copy-wrap">
+        <input type="text" id="patientLinkInput" class="link-input" readonly />
+        <button id="btnCopyLink" class="btn btn-primary btn-sm" style="display: flex; align-items: center; gap: 6px;">
+          <i class="bi bi-copy"></i> Copy Link
+        </button>
+      </div>
+    </div>
+
+    <!-- Profile Form -->
+    <div class="profile-card">
+      <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">Edit Profile Information</h2>
+      <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 24px;">Update your personal details and professional contact information.</p>
+
+      <form id="profileForm" autocomplete="off">
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label for="profFullName">Full Name</label>
+          <input type="text" id="profFullName" class="input" placeholder="e.g. Dr. Jane Doe" required />
+        </div>
+
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label for="profUsername">Username (read-only)</label>
+          <input type="text" id="profUsername" class="input" disabled style="opacity: 0.7;" />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+          <div class="form-group">
+            <label for="profEmail">Email Address</label>
+            <input type="email" id="profEmail" class="input" placeholder="doctor@clinic.com" />
+          </div>
+          <div class="form-group">
+            <label for="profPhone">Phone Number</label>
+            <input type="tel" id="profPhone" class="input" placeholder="+1 555 0192" />
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 28px;">
+          <label for="profSpec">Specialization / Department</label>
+          <input type="text" id="profSpec" class="input" placeholder="e.g. Sleep Medicine / Pulmonology" />
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 12px;">
+          <a href="dashboard.html" class="btn btn-secondary btn-md">Cancel</a>
+          <button type="submit" id="btnSaveProfile" class="btn btn-primary btn-md">Save Changes</button>
+        </div>
+      </form>
+    </div>
+
+  </main>
+
+  <script src="profile.js"></script>
+</body>
+
+</html>

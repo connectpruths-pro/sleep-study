@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Sleep Lab Dashboard — Patient screening overview for sleep disorder management." />
+  <title>Sleep Lab Dashboard — Aurora Sleep Disorder Screening</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .dashboard-tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border-card);
+      padding-bottom: 12px;
+      margin-top: 16px;
+    }
+    
+    .tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-secondary);
+      font-family: var(--font);
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: var(--radius-xs);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .tab-btn:hover {
+      background: var(--bg-option-hover);
+      color: var(--text-primary);
+    }
+    
+    .tab-btn.active {
+      background: var(--accent-glow);
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+    
+    .tab-content {
+      display: none;
+      animation: tabFadeSlideIn 0.4s ease forwards;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    @keyframes tabFadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .dashboard-toolbar-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 16px;
+      width: 100%;
+    }
+    
+    .dashboard-filters {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .filter-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    
+    .filter-select {
+      padding: 8px 12px;
+      min-width: 160px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-input);
+      color: var(--text-primary);
+      border-radius: var(--radius-xs);
+      outline: none;
+      font-size: 0.9rem;
+      cursor: pointer;
+      font-family: var(--font);
+    }
+    
+    .filter-select:focus {
+      border-color: var(--accent);
+    }
+    
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 16px;
+    }
+    
+    @media (max-width: 768px) {
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .chart-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-sm);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .chart-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+    
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 260px;
+    }
+    
+    .btn-delete-row {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: var(--radius-xs);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .btn-delete-row:hover {
+      background: var(--danger-bg);
+      color: var(--danger);
+    }
+    
+    @keyframes dropdownFadeIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- FIXED HEADER (mirrors index.html)              -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <header class="app-header" id="appHeader">
+    <div class="header-inner">
+      <div class="header-left">
+        <img src="logo.png" alt="Aurora Sleep Disorder Screening Logo" class="header-logo" />
+      </div>
+      <div class="header-center" style="display: none;">
+        <span class="header-title">Sleep Lab Dashboard</span>
+      </div>
+      <div class="header-right" style="display:flex;align-items:center;gap:12px;">
+        <a href="admin.html" id="superAdminHeaderBadge" class="btn btn-primary btn-sm" style="display: none; background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%); color: #ffffff; border: none; font-weight: 700; border-radius: var(--radius-xs); padding: 6px 14px; font-size: 0.8rem; box-shadow: 0 2px 10px rgba(168, 85, 247, 0.35); text-decoration: none; align-items: center; gap: 6px; white-space: nowrap;">
+          <i class="bi bi-shield-lock-fill"></i> Platform Admin <span style="background: rgba(0,0,0,0.25); color: #fff; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; font-weight: 800; text-transform: uppercase;">SUPER ADMIN</span>
+        </a>
+        <div class="profile-dropdown-wrapper" style="position: relative; display: inline-flex;">
+          <span id="userDisplay" style="cursor: pointer; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;"></span>
+          <div id="profileDropdown" style="display: none; position: absolute; top: calc(100% + 12px); right: 0; width: 340px; background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--radius-sm); box-shadow: var(--shadow-lg); padding: 20px; z-index: 1001; backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); animation: dropdownFadeIn 0.2s ease forwards;">
+             <!-- Dynamically populated by JS -->
+          </div>
+        </div>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <span class="theme-icon" id="themeIcon"><i class="bi bi-moon-fill"></i></span>
+        </button>
+        <button id="btnLogout" class="btn btn-secondary btn-sm" style="padding: 6px 12px; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+          <i class="bi bi-box-arrow-right"></i> Logout
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- DASHBOARD CONTENT                               -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <main class="dashboard-main">
+
+    <!-- Dashboard Title -->
+    <div class="dashboard-header">
+      <h1 class="dashboard-title">Sleep Lab Dashboard</h1>
+      <p class="dashboard-subtitle">Patient Screening Overview</p>
+    </div>
+
+    <!-- Dashboard Tabs -->
+    <div class="dashboard-tabs">
+      <button class="tab-btn active" id="tabListBtn"><i class="bi bi-clipboard-data"></i> Patients List</button>
+      <button class="tab-btn" id="tabChartsBtn"><i class="bi bi-bar-chart-steps"></i> Visual Analytics</button>
+    </div>
+
+    <!-- Tab 1: Patients List Content -->
+    <div id="tabList" class="tab-content active">
+      <!-- Toolbar: Stats + Search + Filters -->
+      <div class="dashboard-toolbar" style="display: flex; flex-direction: column; gap: 16px; align-items: stretch; margin-bottom: 24px; padding: 24px; background: var(--bg-card); border: 1px solid var(--border-card); border-radius: var(--radius-sm);">
+        <div class="dashboard-toolbar-top">
+          <div class="dashboard-stats" id="dashboardStats" style="margin-bottom: 0;">
+            <span class="stat-item">Total: <strong id="statTotal">0</strong></span>
+            <span class="stat-divider"></span>
+            <span class="stat-item">Completed: <strong id="statCompleted" class="stat--completed">0</strong></span>
+            <span class="stat-divider"></span>
+            <span class="stat-item">Incomplete: <strong id="statIncomplete" class="stat--incomplete">0</strong></span>
+          </div>
+          <div class="dashboard-search" style="max-width: 320px; width: 100%;">
+            <input type="text" id="searchInput" class="input dashboard-search-input"
+              placeholder="Search by name or phone…" autocomplete="off" />
+          </div>
+        </div>
+        
+        <div class="dashboard-filters">
+          <div class="filter-group">
+            <label for="filterDisorder">Disorder Classifier:</label>
+            <select id="filterDisorder" class="filter-select">
+              <option value="all">All Disorders</option>
+              <option value="osa">Obstructive Sleep Apnea</option>
+              <option value="insomnia">Insomnia</option>
+              <option value="hypersomnia">Hypersomnia</option>
+              <option value="circadian">Circadian Rhythm</option>
+              <option value="comorbid">Any Comorbidity (Multi-disorder)</option>
+              <option value="comisa">COMISA (Insomnia + OSA)</option>
+              <option value="swsd">Shift Work Sleep Disorder</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="filterStatus">Evaluation Status:</label>
+            <select id="filterStatus" class="filter-select">
+              <option value="all">All Statuses</option>
+              <option value="completed">Completed</option>
+              <option value="incomplete">Incomplete</option>
+            </select>
+          </div>
+          <button id="btnExportExcel" class="btn btn-secondary btn-sm" style="margin-left: auto; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; padding: 8px 16px; background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.35); border-radius: var(--radius-xs); cursor: pointer;">
+            <i class="bi bi-file-earmark-excel"></i> Export to Excel (.csv)
+          </button>
+        </div>
+      </div>
+
+      <!-- Patient Table -->
+      <div class="dashboard-table-wrap">
+        <table class="dashboard-table" id="patientTable">
+          <thead>
+            <tr>
+              <th>Patient Name</th>
+              <th>Phone</th>
+              <th>Status</th>
+              <th>Primary Finding</th>
+              <th>AHI</th>
+              <th>Secondary Finding</th>
+              <th>Comments</th>
+              <th>Risk Level</th>
+              <th>Date</th>
+              <th style="width: 80px; text-align: center;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="patientTableBody">
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty state -->
+      <div id="emptyState" class="dashboard-empty" style="display:none;">
+        No patients match your search.
+      </div>
+    </div>
+
+    <!-- Tab 2: Visual Analytics Content -->
+    <div id="tabVisuals" class="tab-content">
+      <div class="charts-grid">
+        <!-- Chart 1: Screening Status -->
+        <div class="chart-card">
+          <h3>Screening Status Ratio</h3>
+          <div class="chart-container">
+            <canvas id="chartStatus"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: Primary Disorder Distribution -->
+        <div class="chart-card">
+          <h3>Primary Disorder Distribution (Completed)</h3>
+          <div class="chart-container">
+            <canvas id="chartDisorder"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 3: Highest Risk Tier Distribution -->
+        <div class="chart-card">
+          <h3>Patient Risk Level Breakdown (Completed)</h3>
+          <div class="chart-container">
+            <canvas id="chartRisk"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 4: Comorbidity Co-occurrence Profile -->
+        <div class="chart-card">
+          <h3>Disorder Co-occurrence & Comorbidities (Completed)</h3>
+          <div class="chart-container">
+            <canvas id="chartComorbid"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 5: Circadian Subtype Distribution -->
+        <div class="chart-card">
+          <h3>Circadian Subtype Distribution (Completed)</h3>
+          <div class="chart-container">
+            <canvas id="chartCircadian"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 6: Overview KPIs -->
+        <div class="chart-card">
+          <h3>Sleep Lab KPI Summary</h3>
+          <div style="display:flex; flex-direction:column; gap:16px; width:100%; height:100%; justify-content:center; padding:8px;">
+            <div style="background:var(--accent-glow); border:1px solid var(--accent); border-radius:var(--radius-sm); padding:20px; text-align:center;">
+              <div style="font-size:2.5rem; font-weight:800; color:var(--text-primary);" id="kpiTotal">0</div>
+              <div style="font-size:0.9rem; color:var(--text-secondary); font-weight:600; margin-top: 4px;">Total Patient Records</div>
+            </div>
+            <div style="background:var(--success-bg); border:1px solid var(--success-border); border-radius:var(--radius-sm); padding:20px; text-align:center;">
+              <div style="font-size:2.5rem; font-weight:800; color:var(--success);" id="kpiCompleted">0</div>
+              <div style="font-size:0.9rem; color:var(--text-secondary); font-weight:600; margin-top: 4px;">Completed Screenings</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Edit Patient Modal -->
+  <div id="editPatientModal" class="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
+    <div class="card" style="max-width: 540px; width: 100%; position: relative; padding: 32px; border-radius: var(--radius); background: var(--bg-card); border: 1px solid var(--border-card); box-shadow: var(--shadow-lg); max-height: 90vh; overflow-y: auto;">
+      <button id="closeEditPatientModal" type="button" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 1.4rem; color: var(--text-muted); cursor: pointer;">
+        &times;
+      </button>
+
+      <div style="margin-bottom: 20px;">
+        <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">✏️ Edit Patient Details</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;">Update patient contact info, referral source, and clinical notes.</p>
+      </div>
+
+      <form id="editPatientForm" autocomplete="off">
+        <input type="hidden" id="editPatientId" />
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label for="editPatientName" style="font-size: 0.85rem; font-weight: 600;">Full Name <span class="req">*</span></label>
+          <input type="text" id="editPatientName" class="input" placeholder="Patient's full name" required />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+          <div class="form-group">
+            <label for="editPatientPhone" style="font-size: 0.85rem; font-weight: 600;">Phone Number</label>
+            <input type="tel" id="editPatientPhone" class="input" placeholder="e.g. +91 9876543210" />
+          </div>
+          <div class="form-group">
+            <label for="editPatientEmail" style="font-size: 0.85rem; font-weight: 600;">Email Address</label>
+            <input type="email" id="editPatientEmail" class="input" placeholder="you@example.com" />
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label for="editPatientReferral" style="font-size: 0.85rem; font-weight: 600;">Referral Source</label>
+          <input type="text" id="editPatientReferral" class="input" placeholder="e.g. Online (Event), Clinics/hospital" />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+          <div class="form-group">
+            <label for="editPatientAhi" style="font-size: 0.85rem; font-weight: 600;">AHI Value</label>
+            <input type="text" id="editPatientAhi" class="input" placeholder="e.g. 12.5" />
+          </div>
+          <div class="form-group">
+            <label for="editPatientSecondary" style="font-size: 0.85rem; font-weight: 600;">Secondary Finding</label>
+            <select id="editPatientSecondary" class="input" style="background: var(--bg-input); color: var(--text-primary);">
+              <option value="">None</option>
+              <option value="Obstructive Sleep Apnea (OSA)">Obstructive Sleep Apnea (OSA)</option>
+              <option value="Insomnia">Insomnia</option>
+              <option value="Hypersomnia">Hypersomnia</option>
+              <option value="Circadian Rhythm Disorder">Circadian Rhythm Disorder</option>
+              <option value="Others">Others</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 24px;">
+          <label for="editPatientComments" style="font-size: 0.85rem; font-weight: 600;">Clinical Notes / Comments</label>
+          <textarea id="editPatientComments" class="input" rows="3" placeholder="Enter clinical notes, study recommendations..." style="resize: vertical;"></textarea>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button type="button" id="btnCancelEditPatient" class="btn btn-secondary">Cancel</button>
+          <button type="submit" id="btnSaveEditPatient" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="dashboard.js?v=20260930"></script>
+</body>
+
+</html>
